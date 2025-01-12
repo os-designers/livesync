@@ -1,5 +1,5 @@
 [project]
-name = "livesync"
+name = "livesync-io"
 version = "0.1.0"
 description = "The graph-based video processing framework"
 authors = [
@@ -93,7 +93,7 @@ typecheck = { chain = [
 "proto:compile" = "bash scripts/proto"
 
 [build-system]
-requires = ["hatchling", "hatch-fancy-pypi-readme"]
+requires = ["hatchling==1.26.3", "hatch-fancy-pypi-readme"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
@@ -151,6 +151,8 @@ exclude = [
     "_dev",
     ".venv",
     ".nox",
+    "examples/**",
+    "src/livesync/_protos/**",
 ]
 
 reportImplicitOverride = true

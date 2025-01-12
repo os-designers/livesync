@@ -2,8 +2,8 @@ import numpy as np
 import pytest
 from numpy.typing import NDArray
 
-from livesync.nodes.presets import ResolutionNode
 from livesync import VideoFrame
+from livesync.nodes.presets import ResolutionNode
 
 
 class TestResolutionNode:

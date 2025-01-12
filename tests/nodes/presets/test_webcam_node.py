@@ -1,5 +1,5 @@
-import asyncio
 import time
+import asyncio
 from unittest.mock import patch
 
 import cv2
@@ -7,8 +7,8 @@ import numpy as np
 import pytest
 from numpy.typing import NDArray
 
-from livesync.nodes.presets import WebcamNode
 from livesync import VideoFrame
+from livesync.nodes.presets import WebcamNode
 
 
 class MockVideoCapture:
@@ -32,7 +32,7 @@ class MockVideoCapture:
     def release(self):
         self.released = True
 
-    def set(self, prop_id: int, value: float):
+    def set(self, prop_id: int, value: int):
         if prop_id == cv2.CAP_PROP_FPS:
             self.fps = value
 

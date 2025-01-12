@@ -68,7 +68,7 @@ class LivesyncRemoteNode(RemoteNode, ABC):
             logger.error(f"Error connecting to gRPC endpoints: {e}")
             raise e
 
-    async def health_check(self) -> list[HealthCheckResponse] | None:
+    async def health_check(self) -> None:
         try:
             request = HealthCheckRequest()
             responses: list[HealthCheckResponse] = await asyncio.gather(

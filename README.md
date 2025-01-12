@@ -7,14 +7,14 @@ The graph-based video processing framework for building real-time video applicat
 We recommend using `rye` for installation:
 
 ```bash
-rye add livesync
+rye add livesync-io
 ```
 
 Alternatively, you can use pip:
 
 ```bash
 # install from PyPI
-pip install livesync
+pip install livesync-io
 ```
 
 ## Usage

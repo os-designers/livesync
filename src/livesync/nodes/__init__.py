@@ -9,8 +9,8 @@ from .presets import (
     LiveKitVideoPublisherNode,
 )
 from .base_node import BaseNode, NodeCallbackHandler
-from .source_node import SourceNode
 from .remote_node import RemoteNode
+from .source_node import SourceNode
 
 __all__ = [
     "BaseNode",

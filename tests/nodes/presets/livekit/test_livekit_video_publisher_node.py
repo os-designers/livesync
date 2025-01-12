@@ -1,11 +1,12 @@
+from unittest.mock import Mock
+
 import numpy as np
 import pytest
-from unittest.mock import Mock
+from livekit import rtc  # type: ignore
 from numpy.typing import NDArray
 
-from livekit import rtc  # type: ignore
-from livesync.nodes.presets.livekit import LiveKitVideoPublisherNode
 from livesync.frames.video_frame import VideoFrame
+from livesync.nodes.presets.livekit import LiveKitVideoPublisherNode
 from livesync.nodes.presets.livekit.livekit_video_publisher_node import BUFFER_TYPE_MAP
 
 

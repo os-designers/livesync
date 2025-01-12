@@ -3,7 +3,7 @@ import signal
 import asyncio
 import logging
 import traceback
-from typing import Any, NoReturn
+from typing import Any
 from concurrent import futures
 from typing_extensions import override
 
@@ -103,7 +103,7 @@ class RemoteNodeServicer(remote_node_pb2_grpc.RemoteNodeServicer):
             # Apply each processor in sequence
             for processor in self._processor_chain:
                 if frame:
-                    frame = await processor.process_frame(frame)
+                    frame = await processor.process_frame(frame)  # type: ignore
 
             # Serialize the transformed frame
             return remote_node_pb2.ProcessFrameResponse(
@@ -155,7 +155,7 @@ class GRPCServer:
         self._port = port
         self._shutdown_event = asyncio.Event()
 
-    async def start(self) -> NoReturn:
+    async def start(self) -> None:
         try:
             remote_node_pb2_grpc.add_RemoteNodeServicer_to_server(self._servicer, self._server)  # type: ignore
             self._server.add_insecure_port(f"[::]:{self._port}")

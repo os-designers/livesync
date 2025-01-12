@@ -1,14 +1,14 @@
 import asyncio
+from unittest.mock import AsyncMock
 
 import numpy as np
-from numpy.typing import NDArray
 import pytest
-from unittest.mock import AsyncMock
 from livekit import rtc  # type: ignore
+from numpy.typing import NDArray
 
+from livesync.frames.video_frame import VideoFrame
 from livesync.nodes.presets.livekit import LiveKitVideoSourceNode
 from livesync.nodes.presets.livekit.livekit_video_source_node import BUFFER_TYPE_MAP
-from livesync.frames.video_frame import VideoFrame
 
 
 class MockVideoFrame:
@@ -96,9 +96,7 @@ class TestLiveKitVideoSourceNode:
         mock_video_stream.aclose.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_source_node_lifecycle(
-        self, mock_video_stream: MockVideoStream, sample_video_data: NDArray[np.uint8]
-    ):
+    async def test_source_node_lifecycle(self, mock_video_stream: MockVideoStream):
         """Test the complete lifecycle of the LiveKit source node."""
         node = LiveKitVideoSourceNode(livekit_stream=mock_video_stream)  # type: ignore
 

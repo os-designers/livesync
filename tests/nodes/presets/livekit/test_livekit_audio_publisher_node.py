@@ -1,11 +1,12 @@
+from unittest.mock import Mock, AsyncMock
+
 import numpy as np
 import pytest
-from unittest.mock import AsyncMock, Mock
+from livekit import rtc  # type: ignore
 from numpy.typing import NDArray
 
-from livekit import rtc  # type: ignore
-from livesync.nodes.presets.livekit import LiveKitAudioPublisherNode
 from livesync.frames.audio_frame import AudioFrame
+from livesync.nodes.presets.livekit import LiveKitAudioPublisherNode
 
 
 class TestLiveKitAudioPublisherNode:

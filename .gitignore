@@ -52,3 +52,6 @@ venv.bak/
 
 # Ruff
 .ruff_cache/
+
+# Mypy
+.mypy_cache/
