@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Check if version type is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 <major|minor|patch>"
+    exit 1
+fi
+
+VERSION_TYPE=$1
+
+# Validate version type
+if [[ ! "$VERSION_TYPE" =~ ^(major|minor|patch)$ ]]; then
+    echo "Invalid version type. Use 'major', 'minor', or 'patch'"
+    exit 1
+fi
+
+# Run bump2version
+bump2version "$VERSION_TYPE" 
