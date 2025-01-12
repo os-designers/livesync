@@ -20,11 +20,11 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install rye
-          rye sync
+      - name: Install rye
+        run: python -m pip install --upgrade pip && pip install rye
+
+      - name: Sync dependencies
+        run: rye sync
 
   lint:
     runs-on: ubuntu-latest
@@ -32,12 +32,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Make scripts executable
-        run: chmod +x ./scripts/*
-
       - name: Run linters
-        run: |
-          ./scripts/lint
+        run: rye run lint
 
   format:
     runs-on: ubuntu-latest
@@ -45,12 +41,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Make scripts executable
-        run: chmod +x ./scripts/*
-
       - name: Run formatters
-        run: |
-          ./scripts/format
+        run: rye run format
 
   test:
     runs-on: ubuntu-latest
@@ -58,12 +50,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Make scripts executable
-        run: chmod +x ./scripts/*
-
       - name: Run tests
-        run: |
-          ./scripts/test
+        run: rye run test
 
   version:
     runs-on: ubuntu-latest
@@ -90,7 +78,6 @@ jobs:
 
       - name: Bump version
         run: |
-          # Determine version bump type based on commit messages
           if git log -1 --pretty=%B | grep -i "BREAKING CHANGE"; then
             bump2version major
           elif git log -1 --pretty=%B | grep -i "feat"; then
@@ -118,11 +105,7 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install PyYAML
-          pip install rye
-          rye sync
+        run: rye sync
 
       - name: Publish to PyPI
         env:
