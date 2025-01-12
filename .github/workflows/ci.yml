@@ -29,22 +29,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-rye-
 
-      - name: Install rye
+      - name: Install and setup rye
         run: |
           curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
-          echo "$HOME/.rye/env" >> $GITHUB_PATH
-
-      - name: Sync dependencies
-        run: rye sync
+          source "$HOME/.rye/env"
+          rye sync
 
       - name: Run linters
-        run: rye run lint
+        run: source "$HOME/.rye/env" && rye run lint
 
       - name: Run formatters
-        run: rye run format
+        run: source "$HOME/.rye/env" && rye run format
 
       - name: Run tests
-        run: rye run test
+        run: source "$HOME/.rye/env" && rye run test
 
   version:
     needs: [test-lint-format]
