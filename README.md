@@ -34,11 +34,11 @@ async def main():
     graph = Graph()
 
     # Add a webcam input node
-    webcam_node = WebcamNode(id="webcam", concurrent=True)
+    webcam_node = WebcamNode(device_id=0, fps=30)
     graph.add_node(webcam_node)
 
     # Add a frame rate processing node
-    frame_rate_node = FrameRateNode(target_fps=30)
+    frame_rate_node = FrameRateNode(target_fps=10)
     graph.add_node(frame_rate_node)
 
     # Connect the nodes
