@@ -92,6 +92,8 @@ typecheck = { chain = [
 ]}
 "proto:compile" = "bash scripts/proto"
 
+test = "pytest"
+
 [build-system]
 requires = ["hatchling==1.26.3", "hatch-fancy-pypi-readme"]
 build-backend = "hatchling.build"
