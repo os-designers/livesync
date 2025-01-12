@@ -1,6 +1,6 @@
 [project]
 name = "livesync-io"
-version = "0.1.7"
+version = "0.1.8"
 description = "The graph-based video processing framework"
 authors = [
     { name = "LiveSync", email = "support@live-sync.io" }
