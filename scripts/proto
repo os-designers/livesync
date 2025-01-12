@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+PROTOBUFS_DIR="protobufs"
+OUTPUT_DIR="src/livesync/_protos"
+
+echo "==> Compiling proto files"
+
+# Compile proto files
+for proto_file in "$PROTOBUFS_DIR"/*.proto; do
+    if [ -f "$proto_file" ]; then
+        base_name=$(basename "$proto_file" .proto)
+        output_dir="${OUTPUT_DIR}/${base_name}"
+        
+        echo "    Compiling: ${base_name}.proto"
+        mkdir -p "$output_dir"
+        touch "${output_dir}/__init__.py"
+        
+        python -m grpc_tools.protoc \
+            -I"$PROTOBUFS_DIR" \
+            --python_out="$output_dir" \
+            --grpc_python_out="$output_dir" \
+            --mypy_out="$output_dir" \
+            "$proto_file" || {
+                echo -e "${RED}Failed to compile: ${base_name}.proto${NC}"
+                exit 1
+            }
+
+        # Modify imports to be relative
+        sed -i '' 's/^import \([^_][^_].*\)_pb2/from . import \1_pb2/' "${output_dir}/${base_name}_pb2.py"
+        sed -i '' 's/^import \([^_][^_].*\)_pb2/from . import \1_pb2/' "${output_dir}/${base_name}_pb2_grpc.py"
+
+        # Update __init__.py
+        echo "from . import ${base_name}_pb2" > "${output_dir}/__init__.py"
+        echo "from . import ${base_name}_pb2_grpc" >> "${output_dir}/__init__.py"
+        echo "__all__ = ['${base_name}_pb2', '${base_name}_pb2_grpc']" >> "${output_dir}/__init__.py"
+    fi
+done
+
+echo -e "${GREEN}Proto compilation completed successfully!${NC}"

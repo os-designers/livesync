@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package livesync;
+
+service RemoteNode {
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+  rpc ConfigureProcessors(ConfigProcessorsRequest) returns (ConfigProcessorsResponse);
+  rpc ProcessFrame(ProcessFrameRequest) returns (ProcessFrameResponse);
+}
+
+message HealthCheckRequest {}
+message HealthCheckResponse {
+  bool is_healthy = 1;
+  string status_message = 2;
+}
+
+message ConfigProcessorsRequest {
+  repeated ProcessorConfig processors = 1;
+}
+
+message ProcessorConfig {
+  string name = 1;                     // e.g. "frame_rate", "resolution"
+  map<string, string> settings = 2;    // e.g. {"fps": "5"}
+}
+
+message ConfigProcessorsResponse {
+  bool success = 1;
+  string error_message = 2;
+}
+
+message ProcessFrameRequest {
+  bytes target_frame = 1;
+}
+
+message ProcessFrameResponse {
+  bool success = 1;
+  optional bytes processed_frame = 2;
+  string error_message = 3;
+}

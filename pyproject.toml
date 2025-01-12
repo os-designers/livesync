@@ -1,0 +1,214 @@
+[project]
+name = "livesync"
+version = "0.1.0"
+description = "The graph-based video processing framework"
+authors = [
+    { name = "LiveSync", email = "support@live-sync.io" }
+]
+dependencies = [
+    "numpy>=2.1.0, <3.0.0",
+    "livekit>=0.19.1",
+    "livekit-api>=0.8.1, <0.9.0",
+    "httpx>=0.25.2",
+    "protobuf>=5.26.1, <6.0.dev0",
+    "grpcio>=1.68.1, <2.0.0",
+    "typing-extensions>=4.12.2",
+    "opencv-python>=4.10.0.84",
+]
+readme = "README.md"
+requires-python = ">= 3.10"
+classifiers = [
+  "Typing :: Typed",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: OS Independent",
+  "Operating System :: POSIX",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: Microsoft :: Windows",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "License :: OSI Approved :: Apache Software License"
+]
+
+[project.urls]
+Homepage = "https://github.com/os-designers/livesync"
+Repository = "https://github.com/os-designers/livesync"
+
+[project.scripts]
+livesync = "livesync.cli:main"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "pyright>=1.1.359",
+    "mypy",
+    "pytest",
+    "pytest-asyncio",
+    "ruff",
+    "importlib-metadata>=6.7.0",
+    "types-protobuf>=4.0.0, <5.0.0",
+    "grpcio-tools>=1.68.1, <2.0.0",
+    "mypy-protobuf>=3.6.0, <4.0.0",
+    "rich>=13.9.4",
+]
+
+[tool.rye.workspace]
+members = ["examples/*"]
+
+[tool.rye.scripts]
+format = { chain = [
+  "format:ruff",
+  "format:docs",
+  "fix:ruff",
+  # run formatting again to fix any inconsistencies when imports are stripped
+  "format:ruff",
+]}
+"format:docs" = "python scripts/utils/ruffen-docs.py README.md"
+"format:ruff" = "ruff format"
+
+"lint" = { chain = [
+  "check:ruff",
+  "typecheck",
+  "check:importable",
+]}
+"check:ruff" = "ruff check ."
+"fix:ruff" = "ruff check --fix ."
+
+"check:importable" = "python -c 'import livesync'"
+
+typecheck = { chain = [
+  "typecheck:pyright",
+  "typecheck:mypy"
+]}
+"typecheck:pyright" = "pyright"
+"typecheck:verify-types" = "pyright --verifytypes livesync --ignoreexternal"
+"typecheck:mypy" = "mypy ."
+
+"proto" = { chain = [
+  "proto:compile",
+  "format",  # Run format after proto compilation
+]}
+"proto:compile" = "bash scripts/proto"
+
+[build-system]
+requires = ["hatchling", "hatch-fancy-pypi-readme"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = [
+  "src/*"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/livesync"]
+
+[tool.hatch.build.targets.sdist]
+# Basically everything except hidden files/directories (such as .github, .devcontainers, .python-version, etc)
+include = [
+  "/*.toml",
+  "/*.json",
+  "/*.lock",
+  "/*.md",
+  "/mypy.ini",
+  "/noxfile.py",
+  "bin/*",
+  "examples/*",
+  "src/*",
+  "tests/*",
+]
+
+[tool.hatch.metadata.hooks.fancy-pypi-readme]
+content-type = "text/markdown"
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+path = "README.md"
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
+# replace relative links with absolute links
+pattern = '\[(.+?)\]\(((?!https?://)\S+?)\)'
+replacement = '[\1](https://github.com/os-designers/livesync/tree/main/\g<2>)'
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--tb=short"
+xfail_strict = true
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+filterwarnings = [
+  "error"
+]
+
+[tool.pyright]
+# this enables practically every flag given by pyright.
+# there are a couple of flags that are still disabled by
+# default in strict mode as they are experimental and niche.
+typeCheckingMode = "strict"
+pythonVersion = "3.10"
+
+exclude = [
+    "_dev",
+    ".venv",
+    ".nox",
+]
+
+reportImplicitOverride = true
+
+reportImportCycles = false
+reportPrivateUsage = false
+
+[tool.ruff]
+line-length = 120
+output-format = "grouped"
+target-version = "py37"
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+  # isort
+  "I",
+  # bugbear rules
+  "B",
+  # remove unused imports
+  "F401",
+  # bare except statements
+  "E722",
+  # unused arguments
+  "ARG",
+  # print statements
+  "T201",
+  "T203",
+  # misuse of typing.TYPE_CHECKING
+  "TCH004",
+  # import rules
+  "TID251",
+]
+ignore = [
+  # mutable defaults
+  "B006",
+]
+unfixable = [
+  # disable auto fix for print statements
+  "T201",
+  "T203",
+]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"functools.lru_cache".msg = "This function does not retain type information for the wrapped function's arguments; The `lru_cache` function from `_utils` should be used instead"
+
+[tool.ruff.lint.isort]
+length-sort = true
+length-sort-straight = true
+combine-as-imports = true
+extra-standard-library = ["typing_extensions"]
+known-first-party = ["livesync", "tests"]
+
+[tool.ruff.lint.per-file-ignores]
+"bin/**.py" = ["T201", "T203"]
+"scripts/**.py" = ["T201", "T203"]
+"tests/**.py" = ["T201", "T203"]
+"examples/**.py" = ["T201", "T203"]
+"src/livesync/_protos/**.py" = ["ARG002"]
