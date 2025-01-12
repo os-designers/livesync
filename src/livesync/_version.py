@@ -1,2 +1,2 @@
 __title__ = "livesync"
-__version__ = "0.1.51"
+__version__ = "0.1.52"
