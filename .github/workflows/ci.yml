@@ -30,10 +30,9 @@ jobs:
             ${{ runner.os }}-rye-
 
       - name: Install rye
-        run: curl -sSf https://rye.astral.sh/get | bash
-
-      - name: Add rye to PATH
-        run: echo "$HOME/.rye/shims" >> $GITHUB_PATH
+        run: |
+          curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
+          echo "$HOME/.rye/env" >> $GITHUB_PATH
 
       - name: Sync dependencies
         run: rye sync
