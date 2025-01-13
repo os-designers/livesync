@@ -31,7 +31,7 @@ echo "==> Updating main branch..."
 git pull origin main
 
 echo "==> Bumping version..."
-rye version bump "$VERSION_TYPE"
+rye version -b "$VERSION_TYPE"
 NEW_VERSION=$(rye version)
 
 echo "==> Creating release commit..."
