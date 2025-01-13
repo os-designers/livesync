@@ -28,32 +28,32 @@ frozenlist==1.5.0
     # via aiohttp
     # via aiosignal
 grpcio==1.69.0
-    # via livesync
+    # via livesync-io
 h11==0.14.0
     # via httpcore
 httpcore==1.0.7
     # via httpx
 httpx==0.28.1
-    # via livesync
+    # via livesync-io
 idna==3.10
     # via anyio
     # via httpx
     # via yarl
 livekit==0.19.1
-    # via livesync
+    # via livesync-io
 livekit-api==0.8.1
-    # via livesync
+    # via livesync-io
 livekit-protocol==0.8.0
     # via livekit-api
 multidict==6.1.0
     # via aiohttp
     # via yarl
 numpy==2.1.0
-    # via livesync
+    # via livesync-io
     # via opencv-python
     # via pyqtgraph
 opencv-python==4.10.0.84
-    # via livesync
+    # via livesync-io
 propcache==0.2.1
     # via aiohttp
     # via yarl
@@ -61,7 +61,7 @@ protobuf==5.29.3
     # via livekit
     # via livekit-api
     # via livekit-protocol
-    # via livesync
+    # via livesync-io
 pyjwt==2.10.1
     # via livekit-api
 pyqt6==6.8.0
@@ -88,6 +88,6 @@ types-protobuf==4.25.0.20240417
     # via livekit-protocol
 typing-extensions==4.12.2
     # via anyio
-    # via livesync
+    # via livesync-io
 yarl==1.18.3
     # via aiohttp

@@ -9,103 +9,45 @@ on:
       - main
 
 jobs:
-  test-lint-format:
+  lint:
+    name: lint
     runs-on: ubuntu-latest
+    if: github.repository == 'os-designers/livesync'
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.10'
-
-      - name: Cache Rye
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.rye
-            .venv
-          key: ${{ runner.os }}-rye-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('requirements.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-rye-
-
-      - name: Install and setup rye
+      - name: Install Rye
         run: |
-          curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
-          source "$HOME/.rye/env"
-          rye sync
+          curl -sSf https://rye.astral.sh/get | bash
+          echo "$HOME/.rye/shims" >> $GITHUB_PATH
+        env:
+          RYE_VERSION: '0.35.0'
+          RYE_INSTALL_OPTION: '--yes'
 
-      - name: Run linters
-        run: source "$HOME/.rye/env" && rye run lint
+      - name: Install dependencies
+        run: rye sync --all-features
 
-      - name: Run formatters
-        run: source "$HOME/.rye/env" && rye run format
+      - name: Run lints
+        run: ./scripts/lint
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    if: github.repository == 'os-designers/livesync'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rye
+        run: |
+          curl -sSf https://rye.astral.sh/get | bash
+          echo "$HOME/.rye/shims" >> $GITHUB_PATH
+        env:
+          RYE_VERSION: '0.35.0'
+          RYE_INSTALL_OPTION: '--yes'
+
+      - name: Bootstrap
+        run: ./scripts/bootstrap
 
       - name: Run tests
-        run: source "$HOME/.rye/env" && rye run test
-
-  version:
-    needs: [test-lint-format]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.PAT }}
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.12'
-
-      - name: Install bump2version
-        run: pip install bump2version
-
-      - name: Configure Git
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-
-      - name: Bump version
-        run: |
-          if git log -1 --pretty=%B | grep -i "BREAKING CHANGE"; then
-            bump2version major
-          elif git log -1 --pretty=%B | grep -i "feat"; then
-            bump2version minor
-          else
-            bump2version patch
-          fi
-
-      - name: Push changes
-        run: |
-          git push
-          git push --tags
-
-  publish:
-    needs: [version]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.10'
-
-      - name: Cache Rye
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.rye
-            .venv
-          key: ${{ runner.os }}-rye-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('requirements.lock') }}
-
-      - name: Install rye
-        env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          source "$HOME/.rye/env"
-          rye build
-          rye publish --token $PYPI_TOKEN
+        run: ./scripts/test

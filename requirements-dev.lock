@@ -29,14 +29,14 @@ frozenlist==1.5.0
     # via aiosignal
 grpcio==1.69.0
     # via grpcio-tools
-    # via livesync
+    # via livesync-io
 grpcio-tools==1.69.0
 h11==0.14.0
     # via httpcore
 httpcore==1.0.7
     # via httpx
 httpx==0.28.1
-    # via livesync
+    # via livesync-io
 idna==3.10
     # via anyio
     # via httpx
@@ -45,9 +45,9 @@ importlib-metadata==8.5.0
 iniconfig==2.0.0
     # via pytest
 livekit==0.19.1
-    # via livesync
+    # via livesync-io
 livekit-api==0.8.1
-    # via livesync
+    # via livesync-io
 livekit-protocol==0.8.0
     # via livekit-api
 markdown-it-py==3.0.0
@@ -64,11 +64,11 @@ mypy-protobuf==3.6.0
 nodeenv==1.9.1
     # via pyright
 numpy==2.1.0
-    # via livesync
+    # via livesync-io
     # via opencv-python
     # via pyqtgraph
 opencv-python==4.10.0.84
-    # via livesync
+    # via livesync-io
 packaging==24.2
     # via pytest
 pluggy==1.5.0
@@ -81,7 +81,7 @@ protobuf==5.29.3
     # via livekit
     # via livekit-api
     # via livekit-protocol
-    # via livesync
+    # via livesync-io
     # via mypy-protobuf
 pygments==2.19.1
     # via rich
@@ -120,7 +120,7 @@ types-protobuf==4.25.0.20240417
     # via mypy-protobuf
 typing-extensions==4.12.2
     # via anyio
-    # via livesync
+    # via livesync-io
     # via mypy
     # via pyright
 yarl==1.18.3
