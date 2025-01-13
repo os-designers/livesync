@@ -68,6 +68,7 @@ format = { chain = [
 ]}
 "format:docs" = "python scripts/utils/ruffen-docs.py README.md"
 "format:ruff" = "ruff format"
+release = { cmd = "./scripts/release" }
 
 "lint" = { chain = [
   "check:ruff",
@@ -94,8 +95,6 @@ typecheck = { chain = [
 "proto:compile" = "bash scripts/proto"
 
 test = "pytest"
-
-release = "bash scripts/bump"
 
 [build-system]
 requires = ["hatchling==1.26.3", "hatch-fancy-pypi-readme"]
