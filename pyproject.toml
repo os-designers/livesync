@@ -2,6 +2,7 @@
 name = "livesync-io"
 version = "0.1.0"
 description = "The graph-based video processing framework"
+license = "MIT"
 authors = [
     { name = "LiveSync", email = "support@live-sync.io" }
 ]
@@ -29,7 +30,7 @@ classifiers = [
   "Operating System :: POSIX :: Linux",
   "Operating System :: Microsoft :: Windows",
   "Topic :: Software Development :: Libraries :: Python Modules",
-  "License :: OSI Approved :: Apache Software License"
+  "License :: OSI Approved :: MIT License"
 ]
 
 [project.urls]
