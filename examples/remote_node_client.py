@@ -2,8 +2,8 @@ import signal
 import asyncio
 import logging
 
-from livesync import Graph, WebcamNode, FrameRateNode
-
+from livesync import Graph, WebcamNode
+from livesync.nodes.presets.livesync import ProcessorConfig, LivesyncRemoteNode
 
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
@@ -20,7 +20,10 @@ async def main():
     graph.add_node(webcam_node)
 
     # Add a frame rate node
-    frame_rate_node = FrameRateNode(target_fps=5)
+    frame_rate_node = LivesyncRemoteNode(
+        endpoints=["localhost:50051"],
+        configs=[ProcessorConfig(name="frame_rate", settings={"target_fps": "5"})],
+    )
     graph.add_node(frame_rate_node)
 
     # Connect the nodes

@@ -114,88 +114,46 @@ class RemoteNodeServicer(remote_node_pb2_grpc.RemoteNodeServicer):
             logging.error(traceback.format_exc())
             return remote_node_pb2.ProcessFrameResponse(success=False, error_message=str(e))
 
-    # async def UpdateSourceImage(
-    #     self, request: media_transformation_pb2.UpdateSourceImageRequest, context: grpc.aio.ServicerContext
-    # ) -> media_transformation_pb2.UpdateSourceImageResponse:
-    #     try:
-    #         source_image = np.frombuffer(request.source_image, dtype=np.uint8)
-    #         if source_image.size == 0:
-    #             self.source_face = None
-    #             return media_transformation_pb2.UpdateSourceImageResponse(success=True)
-
-    #         decoded_image = cv2.imdecode(source_image, cv2.IMREAD_COLOR)
-
-    #         faces = get_many_faces([decoded_image])
-    #         self.source_face = faces[0] if faces else None
-
-    #         if not self.source_face:
-    #             return media_transformation_pb2.UpdateSourceImageResponse(
-    #                 success=False, error_message="No faces detected in source image"
-    #             )
-
-    #         return media_transformation_pb2.UpdateSourceImageResponse(success=True)
-
-    #     except Exception as e:
-    #         logger.error(f"Error during UpdateSourceImage: {str(e)}")
-    #         logger.error(traceback.format_exc())
-    #         return media_transformation_pb2.UpdateSourceImageResponse(
-    #             success=False, error_message=f"Processing error: {str(e)}"
-    #         )
-
-    # async def UpdateSourceVoice(
-    #     self, request: media_transformation_pb2.UpdateSourceVoiceRequest, context: grpc.aio.ServicerContext
-    # ) -> media_transformation_pb2.UpdateSourceVoiceResponse:
-    #     raise NotImplementedError("UpdateSourceVoice is not implemented")
-
-
-class GRPCServer:
-    def __init__(self, port: int = 50051, max_workers: int = 10, options: list[tuple[str, Any]] = []):
-        self._servicer = RemoteNodeServicer()
-        self._server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=max_workers), options=options)
-        self._port = port
-        self._shutdown_event = asyncio.Event()
-
-    async def start(self) -> None:
-        try:
-            remote_node_pb2_grpc.add_RemoteNodeServicer_to_server(self._servicer, self._server)  # type: ignore
-            self._server.add_insecure_port(f"[::]:{self._port}")
-            await self._server.start()
-            logger.info(f"Server started on port {self._port}")
-
-            # Wait for termination signals (SIGTERM or SIGINT)
-            loop = asyncio.get_running_loop()
-            loop.add_signal_handler(signal.SIGTERM, lambda: asyncio.create_task(self.stop()))
-            loop.add_signal_handler(signal.SIGINT, lambda: asyncio.create_task(self.stop()))
-
-            await self._shutdown_event.wait()
-        except Exception as e:
-            logger.error(f"Failed to start server: {str(e)}")
-            sys.exit(1)
-
-    async def stop(self) -> None:
-        if self._server:
-            logger.info("Stopping server...")
-            await self._server.stop(grace=5)
-            logger.info("Server stopped")
-
-        self._shutdown_event.set()
-
 
 async def main() -> None:
     try:
         logger.info("Initializing server...")
-        server = GRPCServer(
-            port=50051,
-            max_workers=10,
+
+        # Server setup
+        servicer = RemoteNodeServicer()
+        server = grpc.aio.server(
+            futures.ThreadPoolExecutor(max_workers=10),
             options=[
                 ("grpc.max_receive_message_length", 10 * 1024 * 1024),  # 10MB
                 ("grpc.max_send_message_length", 10 * 1024 * 1024),  # 10MB
                 ("grpc.max_metadata_size", 10 * 1024 * 1024),  # 10MB
             ],
         )
-        logger.info("Starting server...")
+
+        # Add service and port
+        remote_node_pb2_grpc.add_RemoteNodeServicer_to_server(servicer, server)  # type: ignore
+        server.add_insecure_port("[::]:50051")
+
+        # Start server
         await server.start()
-        logger.info("Server started")
+        logger.info("Server started on port 50051")
+
+        # Handle termination signals
+        shutdown_event = asyncio.Event()
+        loop = asyncio.get_running_loop()
+
+        async def stop_server():
+            logger.info("Stopping server...")
+            await server.stop(grace=5)
+            logger.info("Server stopped")
+            shutdown_event.set()
+
+        loop.add_signal_handler(signal.SIGTERM, lambda: asyncio.create_task(stop_server()))
+        loop.add_signal_handler(signal.SIGINT, lambda: asyncio.create_task(stop_server()))
+
+        # Wait for shutdown signal
+        await shutdown_event.wait()
+
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
         sys.exit(1)
