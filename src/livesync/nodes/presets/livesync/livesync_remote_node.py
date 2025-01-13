@@ -1,6 +1,5 @@
 import asyncio
 from abc import ABC
-from typing import Generic, TypeVar
 from logging import getLogger
 from dataclasses import field, dataclass
 from typing_extensions import override
@@ -25,23 +24,6 @@ from ...._protos.remote_node.remote_node_pb2 import (
 
 logger = getLogger(__name__)
 
-T = TypeVar("T")
-
-
-class RoundRobinSelector(Generic[T]):
-    """Round robin index selector for a given list of items."""
-
-    def __init__(self, items: list[T]):
-        self._items: list[T] = items
-        self._index: int = 0
-        self._lock: asyncio.Lock = asyncio.Lock()
-
-    async def next(self) -> T:
-        async with self._lock:
-            item = self._items[self._index]
-            self._index = (self._index + 1) % len(self._items)
-            return item
-
 
 @dataclass
 class LivesyncRemoteNode(RemoteNode, ABC):
@@ -52,7 +34,6 @@ class LivesyncRemoteNode(RemoteNode, ABC):
     def __post_init__(self):
         super().__post_init__()
         self._connection_manager = GrpcConnectionManager(self.endpoints, remote_node_pb2_grpc.RemoteNodeStub)
-        self._selector = RoundRobinSelector(self.endpoints)
 
     @override
     async def _connect(self):
