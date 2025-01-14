@@ -55,6 +55,34 @@ class Graph:
         if to_node.id in self._edges[from_node.id]:
             raise ValueError("Edge already exists")
 
+    async def replace_node(self, old_node: BaseNode, new_node: BaseNode) -> None:
+        """Replace an existing node with a new node while preserving connections."""
+        if not any(n.id == old_node.id for n in self._nodes):
+            raise ValueError("Old node not found in graph")
+
+        # Store connection information of the old node
+        predecessors = [n for n in self._nodes if old_node.id in self._edges[n.id]]
+        successors = self.get_successors(old_node)
+
+        is_running = self._is_running
+
+        if is_running:
+            await self.stop()
+
+        # Replace the node
+        self.remove_node(old_node)
+        self.add_node(new_node)
+
+        # Restore connections
+        for pred in predecessors:
+            self.add_edge(pred, new_node)
+        for succ in successors:
+            self.add_edge(new_node, succ)
+
+        # Start the new node if graph is running
+        if is_running:
+            await self.start()
+
     def remove_node(self, node: BaseNode) -> None:
         """Remove a node from the graph."""
         node_id = node.id

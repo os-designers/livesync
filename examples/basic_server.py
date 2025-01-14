@@ -5,7 +5,6 @@ import logging
 import traceback
 from typing import Any
 from concurrent import futures
-from typing_extensions import override
 
 import grpc  # type: ignore
 
@@ -35,24 +34,22 @@ def create_processor(name: str, config: dict[str, Any]) -> BaseNode:
 class RemoteNodeServicer(remote_node_pb2_grpc.RemoteNodeServicer):
     def __init__(self):
         self._processor_chain: list[BaseNode] = []
-        self._is_service_ready = False
+        self._is_ready = False
 
     # -------------------------------------------------------------------------
     # HealthCheck
     # -------------------------------------------------------------------------
-    @override
     async def HealthCheck(
         self, request: remote_node_pb2.HealthCheckRequest, context: grpc.aio.ServicerContext[Any, Any]
     ) -> remote_node_pb2.HealthCheckResponse:
         return remote_node_pb2.HealthCheckResponse(
-            is_healthy=self._is_service_ready,
-            status_message="Service is ready" if self._is_service_ready else "Service is not configured yet",
+            is_healthy=self._is_ready,
+            status_message="Service is ready" if self._is_ready else "Service is not configured yet",
         )
 
     # -------------------------------------------------------------------------
     # ConfigureProcessors
     # -------------------------------------------------------------------------
-    @override
     async def ConfigureProcessors(
         self, request: remote_node_pb2.ConfigProcessorsRequest, context: grpc.aio.ServicerContext[Any, Any]
     ) -> remote_node_pb2.ConfigProcessorsResponse:
@@ -74,7 +71,7 @@ class RemoteNodeServicer(remote_node_pb2_grpc.RemoteNodeServicer):
 
             # Only assign to our chain if everything succeeds
             self._processor_chain = new_chain
-            self._is_service_ready = len(self._processor_chain) > 0
+            self._is_ready = len(self._processor_chain) > 0
 
             logger.info(f"Configured {len(self._processor_chain)} processors successfully.")
             return remote_node_pb2.ConfigProcessorsResponse(success=True)
@@ -87,11 +84,10 @@ class RemoteNodeServicer(remote_node_pb2_grpc.RemoteNodeServicer):
     # -------------------------------------------------------------------------
     # ProcessFrame
     # -------------------------------------------------------------------------
-    @override
     async def ProcessFrame(
         self, request: remote_node_pb2.ProcessFrameRequest, context: grpc.aio.ServicerContext[Any, Any]
     ) -> remote_node_pb2.ProcessFrameResponse:
-        if not self._is_service_ready:
+        if not self._is_ready:
             return remote_node_pb2.ProcessFrameResponse(
                 success=False, error_message="Service not configured. Call ConfigureProcessors first."
             )
@@ -120,7 +116,6 @@ async def main() -> None:
         logger.info("Initializing server...")
 
         # Server setup
-        servicer = RemoteNodeServicer()
         server = grpc.aio.server(
             futures.ThreadPoolExecutor(max_workers=10),
             options=[
@@ -131,7 +126,7 @@ async def main() -> None:
         )
 
         # Add service and port
-        remote_node_pb2_grpc.add_RemoteNodeServicer_to_server(servicer, server)  # type: ignore
+        remote_node_pb2_grpc.add_RemoteNodeServicer_to_server(RemoteNodeServicer(), server)  # type: ignore
         server.add_insecure_port("[::]:50051")
 
         # Start server

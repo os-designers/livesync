@@ -165,3 +165,90 @@ class TestBaseGraph:
         # Test non-existent node
         not_found = graph.get_node_by_id("nonexistent")
         assert not_found is None
+
+
+@pytest.mark.asyncio
+class TestNodeReplacement:
+    async def test_replace_node_when_not_running(self, mock_node: Mock) -> None:
+        """Test node replacement when graph is not running."""
+        graph = Graph()
+        old_node = mock_node
+        new_node = Mock(spec=BaseNode)
+        new_node.id = "new_node"
+
+        graph.add_node(old_node)
+        await graph.replace_node(old_node, new_node)
+
+        assert new_node in graph.nodes
+        assert old_node not in graph.nodes
+        # Verify old node was not stopped since graph wasn't running
+        old_node.stop.assert_not_called()
+
+    async def test_replace_node_preserves_connections(self, mock_node: Mock) -> None:
+        """Test that node replacement preserves graph connections."""
+        graph = Graph()
+
+        # Setup nodes
+        old_node = mock_node
+        new_node = Mock(spec=BaseNode)
+        new_node.id = "new_node"
+        predecessor = Mock(spec=BaseNode)
+        predecessor.id = "pred"
+        successor = Mock(spec=BaseNode)
+        successor.id = "succ"
+
+        # Build graph
+        graph.add_node(predecessor)
+        graph.add_node(old_node)
+        graph.add_node(successor)
+        graph.add_edge(predecessor, old_node)
+        graph.add_edge(old_node, successor)
+
+        # Start graph and replace node
+        await graph.start()
+        await graph.replace_node(old_node, new_node)
+
+        # Verify connections are preserved
+        assert new_node in graph.get_successors(predecessor)
+        assert successor in graph.get_successors(new_node)
+
+        # Verify old node was properly stopped
+        old_node.stop.assert_called_once()
+
+        # Verify new node was started
+        new_node.start.assert_called_once()
+
+        await graph.stop()
+
+    async def test_replace_nonexistent_node(self, mock_node: Mock) -> None:
+        """Test replacing a node that doesn't exist in the graph."""
+        graph = Graph()
+        new_node = Mock(spec=BaseNode)
+        new_node.id = "new_node"
+
+        with pytest.raises(ValueError, match="Node not found in graph"):
+            await graph.replace_node(mock_node, new_node)
+
+    @pytest.mark.asyncio
+    async def test_replace_node_handles_stop_error(self, mock_node: Mock) -> None:
+        """Test node replacement when stopping the old node fails."""
+        graph = Graph()
+        old_node = mock_node
+        new_node = Mock(spec=BaseNode)
+        new_node.id = "new_node"
+
+        # Setup mock to raise an exception during stop
+        old_node.stop.side_effect = Exception("Stop error")
+
+        graph.add_node(old_node)
+        await graph.start()
+
+        # Should raise the exception from stop
+        with pytest.raises(Exception, match="Stop error"):
+            await graph.replace_node(old_node, new_node)
+
+        # Verify old node is still in graph
+        assert old_node in graph.nodes
+        assert new_node not in graph.nodes
+
+        await graph.stop()

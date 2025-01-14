@@ -4,7 +4,7 @@ from PyQt6.QtGui import QPen, QBrush, QColor, QPainter, QMouseEvent, QPaintEvent
 from PyQt6.QtCore import Qt, QRectF, QPointF, pyqtSignal
 from PyQt6.QtWidgets import QWidget
 
-from livesync.graphs import Graph
+from livesync import Graph, BaseNode
 
 from ...core.metrics import NodeMetrics
 
@@ -175,22 +175,45 @@ class GraphView(QWidget):
 
     def update_graph(self, graph: Graph):
         """Update the graph view with the given graph"""
-        # Add new nodes to default position
-        node_count = len(graph.nodes)
-        spacing = self.height() / (node_count + 1)
+        # Reset existing nodes
+        self.nodes.clear()
+        self.selected_node = None
+
+        # Find root node (node with no incoming edges)
+        all_target_nodes: set[str] = set()
+        for targets in graph._edges.values():
+            all_target_nodes.update(targets)
+
+        root_nodes = [node for node in graph.nodes if node.id not in all_target_nodes]
+        if not root_nodes:
+            return
+        # Calculate positions starting from root
         width = self.width() / 2
+        spacing = self.height() / (len(graph.nodes) + 1)
+        current_y = spacing
 
-        for idx, node in enumerate(graph.nodes):
-            node_id = node.id
-            if node_id not in self.nodes:
-                x = width - 30
-                y = spacing * (idx + 1) - 30
-                self.nodes[node_id] = NodeVisual(node_id, x, y, 60, 60)
+        def add_node_recursive(node: BaseNode, visited: set[str]):
+            nonlocal current_y
+            if node.id in visited:
+                return
 
-            # self.nodes[node_id].update_metrics(node.metrics)
+            visited.add(node.id)
+            x = width - 30
+            y = current_y - 30
+            self.nodes[node.id] = NodeVisual(node.id, x, y, 60, 60)
+            current_y += spacing
 
-        if graph.nodes and self.selected_node is None:
-            first_node_id = graph.nodes[0].id
+            # Process successors
+            for successor in graph.get_successors(node):
+                add_node_recursive(successor, visited)
+
+        # Start from root and traverse graph
+        visited: set[str] = set()
+        for root in root_nodes:
+            add_node_recursive(root, visited)
+
+        if graph.nodes:
+            first_node_id = root_nodes[0].id
             self.selected_node = first_node_id
             self.node_selected.emit(first_node_id)
         self.update()

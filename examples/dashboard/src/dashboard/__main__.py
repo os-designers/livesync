@@ -4,7 +4,7 @@ import asyncio
 import qasync  # type: ignore
 from PyQt6.QtWidgets import QApplication
 
-from .core.flow import create_graph
+from .core.flow import init_graph, on_node_replace_requested
 from .gui.main_window import MainWindow
 
 
@@ -18,7 +18,14 @@ async def main():
     window.show()
 
     # Setup and start RTC graph
-    graph = await create_graph(window)
+    graph = await init_graph(window)
+
+    # Update the window
+    window.update_graph(graph)
+
+    # Connect toggle button signal to node replacement function
+    window.node_replace_requested.connect(lambda: asyncio.create_task(on_node_replace_requested(graph, window)))
+
     await graph.start()
 
     async def cleanup():

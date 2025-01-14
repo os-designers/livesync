@@ -40,30 +40,30 @@ class MetricsTree(QTreeWidget):
         """
         )
 
-    def _update_data(self, key: str, value: Any):
-        """Update a metric value"""
-        if key in self._items:
-            item = self._items[key]
-
-            # Format value based on its type
-            if isinstance(value, float):
-                formatted_value = f"{value:.6f}"
-            elif isinstance(value, (int, str)):
-                formatted_value = str(value)
-            else:
-                formatted_value = "N/A"
-
-            item.setText(1, formatted_value)
-
-            # Change color based on specific conditions (e.g., warning/error states)
-            if "Error" in key and isinstance(value, (int, float)) and value > 0:
-                item.setForeground(1, Qt.GlobalColor.red)
-            elif "Queue" in key and isinstance(value, (int, float)) and value > 10:
-                item.setForeground(1, Qt.GlobalColor.darkYellow)
-            else:
-                item.setForeground(1, Qt.GlobalColor.black)
-
     def update_data(self, data: dict[str, Any]) -> None:
         """Update multiple metrics at once"""
         for key, value in data.items():
             self._update_data(key, value)
+
+    def _update_data(self, key: str, value: Any):
+        """Update a single metric value"""
+        if key not in self._items:
+            return
+
+        item = self._items[key]
+
+        # Format value based on its type
+        if isinstance(value, float):
+            formatted_value = f"{value:.6f}"
+        else:
+            formatted_value = str(value)
+
+        item.setText(1, formatted_value)
+
+        # Example color changes for demonstration
+        if "Error" in key and isinstance(value, (int, float)) and value > 0:
+            item.setForeground(1, Qt.GlobalColor.red)
+        elif "Queue" in key and isinstance(value, (int, float)) and value > 10:
+            item.setForeground(1, Qt.GlobalColor.darkYellow)
+        else:
+            item.setForeground(1, Qt.GlobalColor.black)
