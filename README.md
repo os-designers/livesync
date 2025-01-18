@@ -1,6 +1,6 @@
-# Livesync
+# LiveSync
 
-The graph-based video processing framework for building real-time video applications. It supports both synchronous and asynchronous processing pipelines and offers a flexible node system for video manipulation.
+The graph-based video processing framework for building real-time video applications. LiveSync provides a flexible node system for creating both synchronous and asynchronous media processing pipelines.
 
 ## Installation
 
@@ -13,96 +13,65 @@ rye add livesync-io
 Alternatively, you can use pip:
 
 ```bash
-# install from PyPI
 pip install livesync-io
 ```
 
-## Usage
+## Quick Start
 
-The library is designed around a graph-based architecture where nodes represent different processing steps that can be connected together to form a processing pipeline.
-
-Here's a basic example:
+Here's a simple example of a video recording pipeline:
 
 ```python
-import asyncio
 from livesync import Graph
-from livesync.nodes import WebcamNode, FrameRateNode
+from livesync.prebuilt.nodes import WebcamNode, FrameRateNode, VideoRecorderNode
+from livesync.prebuilt.callbacks import NodeMonitoringCallback
 
+# Create a processing graph
+workflow = Graph()
 
-async def main():
-    # Create a processing graph
-    graph = Graph()
+# Configure nodes
+webcam = WebcamNode(name="webcam", device_id=0, fps=30)
+frame_rate = FrameRateNode(name="frame_rate", fps=10)
+recorder = VideoRecorderNode(name="video_recorder", filename="output.mp4", fps=10)
 
-    # Add a webcam input node
-    webcam_node = WebcamNode(device_id=0, fps=30)
-    graph.add_node(webcam_node)
+# Build pipeline
+workflow.add_node(webcam)
+workflow.add_node(frame_rate)
+workflow.add_node(recorder)
 
-    # Add a frame rate processing node
-    frame_rate_node = FrameRateNode(target_fps=10)
-    graph.add_node(frame_rate_node)
+workflow.add_edge(webcam, frame_rate)
+workflow.add_edge(frame_rate, recorder)
 
-    # Connect the nodes
-    graph.add_edge(webcam_node, frame_rate_node)
-
-    # Start processing
-    await graph.start()
-
-    # Keep the graph running
+# Execute pipeline
+with workflow.compile() as runner:
     try:
-        await asyncio.Event().wait()
+        run = runner.run(callback=NodeMonitoringCallback())
+        print(run)
     except KeyboardInterrupt:
-        await graph.stop()
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+        print("\nKeyboardInterrupt: Stopping runner.")
 ```
 
 ## Features
 
-### Asynchronous Processing
-
-Each node in the graph acts as an independent processing unit with its own queue, enabling asynchronous processing of frames. This architecture is specifically designed for real-time video processing, allowing high-throughput and low-latency operations.
-
-### Remote Processing
-
-LiveSync supports distributed processing through gRPC-based remote nodes. You can offload processing to remote servers:
-
-```python
-from livesync.nodes.presets.livesync import ProcessorConfig, LivesyncRemoteNode
-
-# Create a remote processing node
-
-remote_node = LivesyncRemoteNode(
-    endpoints=["localhost:50051"],
-    configs=[ProcessorConfig(name="frame_rate", settings={"target_fps": "5"})],
-)
-```
-
-### LiveKit Integration
-
-Built-in support for LiveKit enables real-time video streaming and WebRTC capabilities:
-
-```python
-from livesync.nodes import LiveKitVideoSinkNode, LiveKitVideoSourceNode
-
-# Stream video to LiveKit
-livekit_sink = LiveKitVideoSinkNode(livekit_stream=stream)
-graph.add_node(livekit_sink)
-```
+- **Graph-Based Architecture**: Build complex processing pipelines using a simple, intuitive DAG structure
+- **Real-Time Processing**: Optimized for handling continuous data streams with minimal latency
+- **Flexible Node System**: Create custom processing nodes or use pre-built ones for common media operations
+- **Async-First Design**: Leverages Python's asyncio for efficient concurrent processing
 
 ## Requirements
 
 - Python 3.10 or higher
 - OpenCV Python
-- LiveKit SDK
-- gRPC tools for remote processing
+- FFmpeg
+- gRPC tools (for remote processing)
+
+## Documentation
+
+For detailed documentation and examples, visit our [documentation site](https://os-designers.github.io/livesync/).
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Acknowledgments
+## Support
 
-LiveSync is developed and maintained by OS Designers, Inc. Special thanks to all contributors who have helped shape this framework.
-For support, feature requests, or bug reports, please open an issue on our [GitHub repository](https://github.com/OS-Designers/livesync).
+LiveSync is developed and maintained by OS Designers, Inc. For support, feature requests, or bug reports, please open an issue on our [GitHub repository](https://github.com/OS-Designers/livesync).
