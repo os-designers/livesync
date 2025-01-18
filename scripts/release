@@ -34,12 +34,12 @@ echo "==> Bumping version..."
 rye version -b "$VERSION_TYPE"
 NEW_VERSION=$(rye version)
 
-echo "==> Updating _version.py..."
+echo "==> Updating version.py..."
 sed -i.bak "s/__version__ = \".*\"/__version__ = \"$NEW_VERSION\"/" src/livesync/version.py
-rm src/livesync/_version.py.bak
+rm src/livesync/version.py.bak
 
 echo "==> Creating release commit..."
-git add pyproject.toml src/livesync/_version.py
+git add pyproject.toml src/livesync/version.py
 git commit -m "chore: bump version to $NEW_VERSION"
 
 echo "==> Pushing release..."
