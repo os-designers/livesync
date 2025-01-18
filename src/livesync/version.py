@@ -1,3 +1,2 @@
-from ._version import __version__
-
-VERSION: str = __version__
+__title__ = "livesync"
+__version__ = "0.1.2"

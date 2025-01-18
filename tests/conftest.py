@@ -1,18 +1,13 @@
 from __future__ import annotations
 
-import os
 import logging
-from dataclasses import dataclass
-from unittest.mock import AsyncMock
-from typing_extensions import override
 
 import numpy as np
 import pytest
 from numpy.typing import NDArray
 from pytest_asyncio import is_async_test
 
-from livesync.nodes.base_node import BaseNode, NodeCallbackHandler
-from livesync.frames.base_frame import BaseFrame
+from livesync import AudioFrame, VideoFrame
 
 pytest.register_assert_rewrite("tests.utils")
 
@@ -28,11 +23,6 @@ def pytest_collection_modifyitems(items: list[pytest.Function]) -> None:
         async_test.add_marker(session_scope_marker, append=False)
 
 
-base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:8000")
-
-api_key = os.environ.get("TEST_API_KEY", "test")
-
-
 @pytest.fixture
 def sample_audio_data() -> NDArray[np.float32]:
     """Create sample audio data for testing."""
@@ -45,51 +35,26 @@ def sample_video_data() -> NDArray[np.uint8]:
     return np.random.randint(0, 255, (720, 1280, 3), dtype=np.uint8)
 
 
-@dataclass
-class MockFrame(BaseFrame):
-    """Mock frame implementation for testing."""
-
-    def __post_init__(self) -> None:
-        super().__post_init__()
-        self.frame_type = "mock"
-
-    @override
-    def tobytes(self) -> bytes:
-        metadata = self.frame_type.encode() + b"\x00" + self.timestamp_us.to_bytes(8, "big")
-        return metadata + self.data.tobytes()
-
-    @override
-    @classmethod
-    def frombytes(cls, buffer: bytes) -> "MockFrame":
-        type_end = buffer.index(b"\x00")
-        timestamp_us = int.from_bytes(buffer[type_end + 1 : type_end + 9], "big")
-        data = np.frombuffer(buffer[type_end + 9 :], dtype=np.float32).reshape(-1, 2)
-        return cls(data=data, timestamp_us=timestamp_us)
-
-
-class MockCallbackHandler(NodeCallbackHandler):
-    """Mock callback handler for testing."""
-
-    def __init__(self):
-        self.on_received = AsyncMock()
-        self.on_processed = AsyncMock()
-
-    @override
-    async def on_frame_received(self, node: BaseNode, frame: BaseFrame):
-        await self.on_received(node, frame)
-
-    @override
-    async def on_frame_processed(self, node: BaseNode, frame: BaseFrame):
-        await self.on_processed(node, frame)
-
-
 @pytest.fixture
-def mock_frame(sample_audio_data: NDArray[np.float32]) -> MockFrame:
+def mock_audio_frame(sample_audio_data: NDArray[np.float32]) -> AudioFrame:
     """Provides a mock frame for testing."""
-    return MockFrame(data=sample_audio_data, timestamp_us=1000000)
+    return AudioFrame(
+        data=sample_audio_data,
+        timestamp_us=1000000,
+        sample_rate=44100,
+        num_channels=2,
+        sample_format="float32",
+        channel_layout="stereo",
+    )
 
 
 @pytest.fixture
-def callback_handler() -> MockCallbackHandler:
-    """Provides a mock callback handler for testing."""
-    return MockCallbackHandler()
+def mock_video_frame(sample_video_data: NDArray[np.uint8]) -> VideoFrame:
+    """Provides a mock video frame for testing."""
+    return VideoFrame(
+        data=sample_video_data,
+        timestamp_us=1000000,
+        width=1280,
+        height=720,
+        buffer_type="uint8",
+    )

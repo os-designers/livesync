@@ -1,23 +1,21 @@
+from __future__ import annotations
+
 from livesync import Graph
-from livesync.prebuilt import RemoteNode, WebcamNode
+from livesync.prebuilt.nodes import MicrophoneNode, AudioRecorderNode
 from livesync.prebuilt.callbacks import LoggingCallback
 
 if __name__ == "__main__":
-    # Remote node client
+    # Example: MicrophoneNode Recording
     #
-    #   (X) -> (Y)
+    #   (X) => (Y) => (Z)
     #
-    # Node X captures video frames from the webcam
-    # Node Y drops frames to achieve a target FPS with a remote node
+    # Node X captures audio frames from the microphone
+    # Node Y records the audio frames to a file
 
     workflow = Graph()
 
-    node_x = WebcamNode(name="webcam", fps=30)
-    node_y = RemoteNode(
-        name="remote_node",
-        endpoints=["localhost:50051"],
-        settings={"resolution_node": {"target_height": "320"}},
-    )
+    node_x = MicrophoneNode(name="microphone", sample_rate=44100, chunk_size=1024)
+    node_y = AudioRecorderNode(name="audio_recorder", filename="./output.mp3")
 
     workflow.add_node(node_x)
     workflow.add_node(node_y)

@@ -3,7 +3,7 @@ from typing import Any, Dict, cast
 
 import pytest
 
-from livesync._logs import SensitiveHeadersFilter
+from livesync.utils.logs import SensitiveHeadersFilter
 
 
 @pytest.fixture

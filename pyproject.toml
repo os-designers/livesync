@@ -8,13 +8,13 @@ authors = [
 ]
 dependencies = [
     "numpy>=2.1.0, <3.0.0",
-    "livekit>=0.19.1",
-    "livekit-api>=0.8.1, <0.9.0",
     "httpx>=0.25.2",
     "protobuf>=5.26.1, <6.0.dev0",
     "grpcio>=1.68.1, <2.0.0",
     "typing-extensions>=4.12.2",
     "opencv-python>=4.10.0.84",
+    "pyaudio>=0.2.14",
+    "ffmpeg-python>=0.2.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.10"
@@ -52,6 +52,8 @@ dev-dependencies = [
     "types-protobuf>=4.0.0, <5.0.0",
     "grpcio-tools>=1.68.1, <2.0.0",
     "mypy-protobuf>=3.6.0, <4.0.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.24.0",
     "rich>=13.9.4",
 ]
 
@@ -90,7 +92,7 @@ typecheck = { chain = [
 
 "proto" = { chain = [
   "proto:compile",
-  "format",  # Run format after proto compilation
+  "format", 
 ]}
 "proto:compile" = "bash scripts/proto"
 
@@ -144,6 +146,13 @@ filterwarnings = [
   "error"
 ]
 
+[tool.mypy]
+python_version = "3.10"
+exclude = [
+    "src/livesync/prebuilt/nodes/remote_node/server/remote_node_pb2_grpc.py",
+    "src/livesync/prebuilt/nodes/remote_node/server/remote_node_pb2.py",
+]
+
 [tool.pyright]
 # this enables practically every flag given by pyright.
 # there are a couple of flags that are still disabled by
@@ -156,7 +165,7 @@ exclude = [
     ".venv",
     ".nox",
     "examples/**",
-    "src/livesync/_protos/**",
+    "src/livesync/prebuilt/nodes/remote_node/server/**",
 ]
 
 reportImplicitOverride = true
@@ -217,4 +226,5 @@ known-first-party = ["livesync", "tests"]
 "scripts/**.py" = ["T201", "T203"]
 "tests/**.py" = ["T201", "T203"]
 "examples/**.py" = ["T201", "T203", "ARG002"]
-"src/livesync/_protos/**.py" = ["ARG002"]
+"src/livesync/prebuilt/nodes/remote_node/server/**.py" = ["ARG002"]
+"src/livesync/prebuilt/callbacks/monitoring_callback.py" = ["T201"]
