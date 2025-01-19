@@ -1,6 +1,6 @@
 [project]
 name = "livesync-io"
-version = "0.2.0"
+version = "0.2.1"
 description = "The graph-based video processing framework"
 license = { text = "MIT" }
 authors = [
