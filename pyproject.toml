@@ -145,8 +145,7 @@ filterwarnings = [
 [tool.mypy]
 python_version = "3.10"
 exclude = [
-    "src/livesync/prebuilt/nodes/remote_node/server/remote_node_pb2_grpc.py",
-    "src/livesync/prebuilt/nodes/remote_node/server/remote_node_pb2.py",
+    "src/livesync/_protos/.*", 
 ]
 
 [tool.pyright]
@@ -161,7 +160,7 @@ exclude = [
     ".venv",
     ".nox",
     "examples/**",
-    "src/livesync/prebuilt/nodes/remote_node/server/**",
+    "src/livesync/_protos/**",
 ]
 
 reportImplicitOverride = true
@@ -222,5 +221,6 @@ known-first-party = ["livesync", "tests"]
 "scripts/**.py" = ["T201", "T203"]
 "tests/**.py" = ["T201", "T203"]
 "examples/**.py" = ["T201", "T203", "ARG002"]
-"src/livesync/prebuilt/nodes/remote_node/server/**.py" = ["ARG002"]
+"src/livesync/_protos/**.py" = ["ARG002", "I001", "F401"]
+"src/livesync/_protos/**.pyi" = ["I001", "TC004"]
 "src/livesync/prebuilt/callbacks/monitoring_callback.py" = ["T201"]
