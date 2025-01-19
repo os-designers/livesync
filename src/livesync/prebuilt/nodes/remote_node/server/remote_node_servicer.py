@@ -7,8 +7,8 @@ from google.protobuf.json_format import MessageToDict
 from .....core.nodes import Node
 from .....utils.logs import logger
 from .....core.frames import VideoFrame
-from .remote_node_pb2 import StepRequest, StepResponse, ConfigureRequest, ConfigureResponse
-from .remote_node_pb2_grpc import RemoteNodeServicer as _RemoteNodeServicer  # type: ignore
+from ....._protos.remote_node.remote_node_pb2 import StepRequest, StepResponse, ConfigureRequest, ConfigureResponse
+from ....._protos.remote_node.remote_node_pb2_grpc import RemoteNodeServicer as _RemoteNodeServicer  # type: ignore
 
 
 class RemoteNodeServicer(_RemoteNodeServicer):

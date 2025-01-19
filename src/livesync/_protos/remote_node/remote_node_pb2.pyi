@@ -3,12 +3,11 @@
 isort:skip_file
 """
 
-import typing
 import builtins
-
-import google.protobuf.message
 import google.protobuf.descriptor
+import google.protobuf.message
 import google.protobuf.struct_pb2
+import typing
 
 DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
 
@@ -43,9 +42,7 @@ class ConfigureResponse(google.protobuf.message.Message):
         success: builtins.bool = ...,
         error_message: builtins.str = ...,
     ) -> None: ...
-    def ClearField(
-        self, field_name: typing.Literal["error_message", b"error_message", "success", b"success"]
-    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["error_message", b"error_message", "success", b"success"]) -> None: ...
 
 global___ConfigureResponse = ConfigureResponse
 
@@ -81,24 +78,8 @@ class StepResponse(google.protobuf.message.Message):
         processed_frame: builtins.bytes | None = ...,
         error_message: builtins.str = ...,
     ) -> None: ...
-    def HasField(
-        self, field_name: typing.Literal["_processed_frame", b"_processed_frame", "processed_frame", b"processed_frame"]
-    ) -> builtins.bool: ...
-    def ClearField(
-        self,
-        field_name: typing.Literal[
-            "_processed_frame",
-            b"_processed_frame",
-            "error_message",
-            b"error_message",
-            "processed_frame",
-            b"processed_frame",
-            "success",
-            b"success",
-        ],
-    ) -> None: ...
-    def WhichOneof(
-        self, oneof_group: typing.Literal["_processed_frame", b"_processed_frame"]
-    ) -> typing.Literal["processed_frame"] | None: ...
+    def HasField(self, field_name: typing.Literal["_processed_frame", b"_processed_frame", "processed_frame", b"processed_frame"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing.Literal["_processed_frame", b"_processed_frame", "error_message", b"error_message", "processed_frame", b"processed_frame", "success", b"success"]) -> None: ...
+    def WhichOneof(self, oneof_group: typing.Literal["_processed_frame", b"_processed_frame"]) -> typing.Literal["processed_frame"] | None: ...
 
 global___StepResponse = StepResponse

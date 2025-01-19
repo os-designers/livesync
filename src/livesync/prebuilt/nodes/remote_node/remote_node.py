@@ -9,9 +9,9 @@ from ....core.nodes import Node
 from ....utils.logs import logger
 from ....core.fields import Field
 from ....core.frames import AudioFrame, VideoFrame
-from .server.remote_node_pb2 import StepRequest, StepResponse, ConfigureRequest, ConfigureResponse
-from .server.remote_node_pb2_grpc import RemoteNodeStub
 from ....utils.round_robin_selector import RoundRobinSelector
+from ...._protos.remote_node.remote_node_pb2 import StepRequest, StepResponse, ConfigureRequest, ConfigureResponse
+from ...._protos.remote_node.remote_node_pb2_grpc import RemoteNodeStub
 
 T = TypeVar("T")
 

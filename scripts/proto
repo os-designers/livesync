@@ -10,36 +10,38 @@ YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
 
 PROTOBUFS_DIR="protobufs"
-PROTO_FILE="${PROTOBUFS_DIR}/remote_node.proto"
-OUTPUT_DIR="src/livesync/prebuilt/nodes/remote_node/server"
+OUTPUT_DIR="src/livesync/_protos"
 
 echo "==> Compiling proto files"
 
-# Compile specific proto file
-if [ -f "$PROTO_FILE" ]; then
-    base_name="remote_node"
-    output_dir="${OUTPUT_DIR}"
+# Compile all proto files
+find "$PROTOBUFS_DIR" -name "*.proto" | while read PROTO_FILE; do
+    REL_PATH=${PROTO_FILE#"$PROTOBUFS_DIR/"}
+    DIR_PATH=$(dirname "$REL_PATH")
+    BASE_NAME=$(basename "$PROTO_FILE" .proto)
     
-    echo "    Compiling: ${base_name}.proto"
-    mkdir -p "$output_dir"
-    touch "${output_dir}/__init__.py"
+    echo "    Compiling: ${REL_PATH}"
+
+     # Create output directory structure
+    OUT_PATH="${OUTPUT_DIR}/${DIR_PATH}"
+    mkdir -p "$OUT_PATH"
+    touch "${OUT_PATH}/__init__.py"
     
     python -m grpc_tools.protoc \
         -I"$PROTOBUFS_DIR" \
-        --python_out="$output_dir" \
-        --grpc_python_out="$output_dir" \
-        --mypy_out="$output_dir" \
+        --python_out="$OUTPUT_DIR" \
+        --grpc_python_out="$OUTPUT_DIR" \
+        --mypy_out="$OUTPUT_DIR" \
         "$PROTO_FILE" || {
-            echo -e "${RED}Failed to compile: ${base_name}.proto${NC}"
+            echo -e "${RED}Failed to compile: ${REL_PATH}${NC}"
             exit 1
         }
 
     # Modify imports to be relative
-    sed -i '' 's/^import \([^_][^_].*\)_pb2/from . import \1_pb2/' "${output_dir}/${base_name}_pb2.py"
-    sed -i '' 's/^import \([^_][^_].*\)_pb2/from . import \1_pb2/' "${output_dir}/${base_name}_pb2_grpc.py"
+    GRPC_FILE="${OUTPUT_DIR}/${REL_PATH%.*}_pb2_grpc.py"
+    if [ -f "$GRPC_FILE" ]; then
+        sed -i '' 's/from [^.]* import \(.*\)_pb2/from . import \1_pb2/' "$GRPC_FILE"
+    fi
+done
 
-    echo -e "${GREEN}Proto compilation completed successfully!${NC}"
-else
-    echo -e "${RED}Error: remote_node.proto not found in ${PROTOBUFS_DIR}${NC}"
-    exit 1
-fi
+echo -e "${GREEN}Proto compilation completed successfully!${NC}"

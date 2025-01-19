@@ -9,12 +9,12 @@ authors = [
 dependencies = [
     "numpy>=2.1.0, <3.0.0",
     "httpx>=0.25.2",
-    "protobuf>=5.26.1, <6.0.dev0",
     "grpcio>=1.68.1, <2.0.0",
     "typing-extensions>=4.12.2",
     "opencv-python>=4.10.0.84",
     "pyaudio>=0.2.14",
     "ffmpeg-python>=0.2.0",
+    "protobuf>=5.29.3",
 ]
 readme = "README.md"
 requires-python = ">= 3.10"
@@ -90,11 +90,7 @@ typecheck = { chain = [
 "typecheck:verify-types" = "pyright --verifytypes livesync --ignoreexternal"
 "typecheck:mypy" = "mypy ."
 
-"proto" = { chain = [
-  "proto:compile",
-  "format", 
-]}
-"proto:compile" = "bash scripts/proto"
+"proto" = "bash scripts/proto"
 
 test = "pytest"
 
