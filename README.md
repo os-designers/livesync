@@ -1,6 +1,8 @@
 # LiveSync
 
-The graph-based video processing framework for building real-time video applications. LiveSync provides a flexible node system for creating both synchronous and asynchronous media processing pipelines.
+![Logo](logo.png)
+
+A Keras-inspired asynchronous stream processing framework for building real-time media applications. LiveSync provides a flexible layer system for creating both synchronous and asynchronous media processing pipelines.
 
 ## Installation
 
@@ -18,44 +20,43 @@ pip install livesync-io
 
 ## Quick Start
 
-Here's a simple example of a video recording pipeline:
+Here's a simple example of a webcam recording pipeline:
 
 ```python
-from livesync import Graph
-from livesync.prebuilt.nodes import WebcamNode, FrameRateNode, VideoRecorderNode
-from livesync.prebuilt.callbacks import NodeMonitoringCallback
+import livesync as ls
+from livesync import layers
 
-# Create a processing graph
-workflow = Graph()
+x = ls.WebcamInput(device_id=0, fps=30)
 
-# Configure nodes
-webcam = WebcamNode(name="webcam", device_id=0, fps=30)
-frame_rate = FrameRateNode(name="frame_rate", fps=10)
-recorder = VideoRecorderNode(name="video_recorder", filename="output.mp4", fps=10)
+f1 = layers.FpsControlLayer(fps=10)
+f2 = layers.VideoRecorderLayer(filename="./examples/output.mp4", fps=f1.fps)
 
-# Build pipeline
-workflow.add_node(webcam)
-workflow.add_node(frame_rate)
-workflow.add_node(recorder)
+h = f1(x)
+y = f2(h)
 
-workflow.add_edge(webcam, frame_rate)
-workflow.add_edge(frame_rate, recorder)
+sync = ls.Sync(inputs=[x], outputs=[y])
+with sync.compile() as runner:
+    runner.run(callback=ls.LoggingCallback())
+```
 
-# Execute pipeline
-with workflow.compile() as runner:
-    try:
-        run = runner.run(callback=NodeMonitoringCallback())
-        print(run)
-    except KeyboardInterrupt:
-        print("\nKeyboardInterrupt: Stopping runner.")
+You can visualize the pipeline by printing y.graph:
+
+```python
+>>> print(y.graph)
+●  (f2): Records processed frames to MP4 file
+│
+●  (f1): Controls frame rate of the stream
+│
+◇  (x): Captures frames from webcam (device 0)
 ```
 
 ## Features
 
-- **Graph-Based Architecture**: Build complex processing pipelines using a simple, intuitive DAG structure
-- **Real-Time Processing**: Optimized for handling continuous data streams with minimal latency
-- **Flexible Node System**: Create custom processing nodes or use pre-built ones for common media operations
-- **Async-First Design**: Leverages Python's asyncio for efficient concurrent processing
+- **Layer-Based Architecture**: Build complex processing pipelines using a Keras-inspired layer system
+- **Async-First Design**: Built from the ground up for asynchronous stream processing
+- **Media Processing**: Optimized for real-time audio and video processing
+- **Flexible Stream System**: Support for both synchronous and asynchronous data flows
+- **Remote Processing**: Built-in gRPC support for distributed processing
 
 ## Requirements
 

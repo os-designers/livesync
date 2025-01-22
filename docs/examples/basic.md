@@ -1,49 +1,63 @@
-# Basic Examples
+# Quick Start
 
-## Linear Chain Processing
+This guide walks you through creating your first LiveSync pipeline for media processing.
 
-LiveSync supports both class-based and functional approaches for creating nodes. Here are two equivalent implementations:
+## Creating a Simple Video Pipeline
 
-### Class-based Approach
+LiveSync uses a graph-based architecture where nodes represent different processing steps. Let's create a simple video processing pipeline.
 
-```python
-from livesync import Node, Field, Graph
-
-class NumberNode(Node):
-    number: int = Field(default=..., description="Number to output")
-
-    def step(self) -> int:
-        return self.number
-
-class MultiplierNode(Node):
-    source: str = Field(default=..., description="Source node name")
-    factor: int = Field(default=..., description="Multiplication factor")
-
-    async def step(self) -> int:
-        input_value = await self.get_input(self.source)
-        return input_value * self.factor
-
-# Build pipeline
-workflow = Graph()
-node_x = NumberNode(number=2)
-node_y = MultiplierNode(factor=3, source=node_x.name)
-```
-
-### Functional Approach
+### Example: Webcam Recording Pipeline
 
 ```python
-from livesync import Node, Graph
+import livesync as ls
+from livesync import layers
 
-# Define processing functions
-def return_two(self: Node) -> int:
-    return 2
+# Create input stream
+x = ls.WebcamInput(name="webcam", device_id=0, fps=30)
 
-async def multiply_by_three(self: Node) -> int:
-    input_value = await self.get_input("x")
-    return input_value * 3
+# Create processing layers
+f1 = layers.FpsControl(name="frame_rate", fps=10)
+f2 = layers.VideoRecorder(
+    name="video_recorder",
+    filename="./output.mp4",
+    fps=f1.fps
+)
 
-# Build pipeline
-workflow = Graph()
-node_x = Node(name="x", step_func=return_two)
-node_y = Node(name="y", step_func=multiply_by_three)
+y = f2(f1(x))
+
+# Create and run pipeline
+sync = ls.Sync(inputs=[x], outputs=[y])
+with sync.compile() as runner:
+    run = runner.run(callback=ls.LoggingCallback())
 ```
+
+This pipeline:
+
+1. Captures video from your webcam at 30 FPS
+2. Processes it through a frame rate controller to achieve 10 FPS
+3. Records the output to a video file
+
+```
+  ●  (f2): Records processed frames to MP4 file
+  │
+  ●  (f1): Controls frame rate of the stream
+  │
+  ◇  (x): Captures frames from webcam
+```
+
+## Running the Example
+
+Save the script as `webcam_fps_control.py` and run:
+
+```bash
+rye run examples/04_webcam_fps_control.py
+```
+
+The pipeline will start capturing from your webcam and save the processed video to `output.mp4`.
+
+---
+
+**Next Steps**
+
+- Learn about more complex pipelines in the [User Guide](../user-guide/core-concepts.md)
+- See more examples in the [Examples](../examples/advanced.md) section

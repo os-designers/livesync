@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package livesync;
+
+import "google/protobuf/struct.proto";
+
+service RemoteLayer {
+  rpc Init(InitRequest) returns (InitResponse);
+  rpc Call(CallRequest) returns (CallResponse);
+}
+
+message InitRequest {
+  google.protobuf.Struct settings = 1;
+}
+
+message InitResponse {
+  bool success = 1;
+  string error_message = 2;
+}
+
+message CallRequest {
+  bytes x = 1;
+}
+
+message CallResponse {
+  bool success = 1;
+  optional bytes y = 2;
+  string error_message = 3;
+}

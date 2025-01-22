@@ -13,6 +13,8 @@
 -e file:examples/dashboard
 anyio==4.8.0
     # via httpx
+av==14.0.1
+    # via livesync-io
 certifi==2024.12.14
     # via httpcore
     # via httpx

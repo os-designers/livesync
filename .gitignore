@@ -55,3 +55,7 @@ venv.bak/
 
 # Mypy
 .mypy_cache/
+
+# Example Outputs
+output.mp4
+output.mp3

@@ -1,13 +1,41 @@
 # Installation
 
-LiveSync is a **graph-based video processing framework** designed for real-time applications. This guide will walk you through setting it up on your system.
+LiveSync is a real-time media processing framework that helps you build efficient video and audio pipelines. This guide will walk you through the setup process.
 
 ## Requirements
 
 - **Python 3.10 or higher**
-- **pip** (latest version recommended)
-- **FFmpeg** (for video processing)
+- **FFmpeg** (required for media processing)
 - **OpenCV** (automatically installed with LiveSync)
+
+### Installing FFmpeg
+
+FFmpeg is required for media processing. Here's how to install it:
+
+**Windows**:
+
+```bash
+choco install ffmpeg
+```
+
+**macOS**:
+
+```bash
+brew install ffmpeg
+```
+
+**Linux (Ubuntu/Debian)**:
+
+```bash
+sudo apt update
+sudo apt install ffmpeg
+```
+
+Verify FFmpeg installation:
+
+```bash
+ffmpeg -version
+```
 
 ## Installing LiveSync
 

@@ -1,49 +1,40 @@
 from __future__ import annotations
 
 from .version import __title__, __version__
-from .utils.logs import SensitiveHeadersFilter, setup_logging as _setup_logging
+from ._utils.logs import SensitiveHeadersFilter, setup_logging as _setup_logging
 
 __all__ = [
     "__title__",
     "__version__",
-    "Node",
-    "Graph",
-    "Run",
-    "Runner",
-    "Field",
-    "CallbackEvent",
-    "NodeEvent",
-    "GraphEvent",
     "CallbackProtocol",
     "SensitiveHeadersFilter",
     "AudioFrame",
     "VideoFrame",
+    "layers",
+    "Stream",
+    "Sync",
+    "Runner",
+    "Run",
+    "PeriodicConstantInput",
+    "WebcamInput",
+    "MicrophoneInput",
+    "CallbackProtocol",
+    "LoggingCallback",
+    "StreamMonitoringCallback",
+    "StreamEvent",
+    "RunEvent",
+    "RemoteLayer",
+    "RemoteLayerServer",
+    "RemoteLayerServicer",
 ]
-from .core import (
-    Run,
-    Node,
-    Field,
-    Graph,
-    Runner,
-    NodeEvent,
-    AudioFrame,
-    GraphEvent,
-    VideoFrame,
-    CallbackEvent,
-    CallbackProtocol,
-)
+from . import layers
+from .sync import Run, Sync, Runner
+from .frames import AudioFrame, VideoFrame
+from .streams import Stream
+from .callbacks import RunEvent, StreamEvent, LoggingCallback, CallbackProtocol, StreamMonitoringCallback
+from .layers.remote import RemoteLayer, RemoteLayerServer, RemoteLayerServicer
+from .layers.video.webcam import WebcamInput
+from .layers.audio.microphone import MicrophoneInput
+from .layers.numeric.periodic_constant import PeriodicConstantInput
 
 _setup_logging()
-
-# Update the __module__ attribute for exported symbols so that
-# error messages point to this module instead of the module
-# it was originally defined in, e.g.
-# livesync._exceptions.NotFoundError -> livesync.NotFoundError
-__locals = locals()
-for __name in __all__:
-    if not __name.startswith("__"):
-        try:
-            __locals[__name].__module__ = "livesync"
-        except (TypeError, AttributeError):
-            # Some of our exported symbols are builtins which we can't set attributes for.
-            pass

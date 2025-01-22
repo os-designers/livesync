@@ -2,36 +2,28 @@ from dataclasses import dataclass
 
 from PyQt6.QtGui import QImage, QPixmap
 
-from livesync import Run, Node, Field, Graph, Runner, VideoFrame
-from livesync.prebuilt.nodes import WebcamNode, FrameRateNode, ResolutionNode
-from livesync.prebuilt.callbacks import NodeMonitoringCallback
+import livesync as ls
+from livesync import layers
 
 from .main_window import MainWindow
 
 _WEBCAM_FPS = 30
+_window: MainWindow | None = None
 
 
-class OutputNode(Node):
-    window: MainWindow = Field(default=..., description="The main window of the application")
-
-    def bootstrap(self) -> None:
-        if len(self.parents) != 1:
-            raise ValueError("OutputNode must have a single parent")
-        self._parent_node = self.parents[0]
-
-    async def step(self) -> None:
-        frame: VideoFrame = await self.get_input(self._parent_node.name)
-        height, width = frame.data.shape[:2]
-        bytes_per_line = 3 * width
-        qimage = QImage(frame.data.tobytes(), width, height, bytes_per_line, QImage.Format.Format_RGB888)
-        pixmap = QPixmap.fromImage(qimage)
-        self.window.update_frame(pixmap)
+async def update_frame(x: ls.VideoFrame) -> None:
+    global _window
+    height, width = x.data.shape[:2]
+    bytes_per_line = 3 * width
+    qimage = QImage(x.data.tobytes(), width, height, bytes_per_line, QImage.Format.Format_RGB888)
+    pixmap = QPixmap.fromImage(qimage)
+    _window.update_frame(pixmap)  # type: ignore
 
 
 @dataclass
 class WorkflowSession:
-    runner: Runner
-    run: Run
+    runner: ls.Runner
+    run: ls.Run
 
 
 class WorkflowManager:
@@ -44,31 +36,34 @@ class WorkflowManager:
         webcam_device_id: int = 0,
         target_resolution: int = 360,
         target_fps: int = 20,
-    ) -> Run:
+    ) -> ls.Run:
+        global _window
+        _window = window
         # Cancel existing run if any
         if self.current_session:
             self.current_session.run.cancel()
             self.current_session = None
 
         # Create new workflow
-        workflow = Graph()
+        x = layers.WebcamInput(device_id=webcam_device_id, fps=_WEBCAM_FPS)
 
-        video_input = WebcamNode(device_id=webcam_device_id, fps=_WEBCAM_FPS, name="webcam")
-        resolution = ResolutionNode(target_height=target_resolution, name="resolution")
-        frame_rate = FrameRateNode(fps=target_fps, name="frame_rate_default")
-        output = OutputNode(window=window, name="output")
+        # Option 1. Use local frame rate node
+        f1 = layers.FpsControlLayer(fps=target_fps)
 
-        workflow.add_node(video_input)
-        workflow.add_node(frame_rate)
-        workflow.add_node(resolution)
-        workflow.add_node(output)
+        # Option 2. Use remote frame rate node for testing
+        # f1 = RemoteNode(
+        #     name="frame_rate",
+        #     settings={"frame_rate_node": {"fps": target_fps}},
+        #     endpoints=["localhost:50051"],
+        # )
 
-        workflow.add_edge(video_input, frame_rate)
-        workflow.add_edge(frame_rate, resolution)
-        workflow.add_edge(resolution, output)
-        # Compile and run
-        runner = workflow.compile()
-        run = await runner.async_run(callback=NodeMonitoringCallback())
+        f2 = layers.ResolutionControlLayer(target_height=target_resolution)
+        f3 = layers.Lambda(function=update_frame)
+
+        y = f3(f2(f1(x)))
+
+        runner = ls.Sync(inputs=[x], outputs=[y]).compile()
+        run = await runner.async_run(callback=ls.LoggingCallback())
 
         # Store the session
         self.current_session = WorkflowSession(runner=runner, run=run)

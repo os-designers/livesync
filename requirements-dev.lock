@@ -13,6 +13,8 @@
 -e file:examples/dashboard
 anyio==4.8.0
     # via httpx
+av==14.0.1
+    # via livesync-io
 babel==2.16.0
     # via mkdocs-material
 certifi==2024.12.14

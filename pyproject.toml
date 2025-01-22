@@ -15,6 +15,7 @@ dependencies = [
     "pyaudio>=0.2.14",
     "ffmpeg-python>=0.2.0",
     "protobuf>=5.29.3",
+    "av>=14.0.1",
 ]
 readme = "README.md"
 requires-python = ">= 3.10"
@@ -146,6 +147,7 @@ filterwarnings = [
 python_version = "3.10"
 exclude = [
     "src/livesync/_protos/.*", 
+    "examples/.*",
 ]
 
 [tool.pyright]
@@ -162,8 +164,6 @@ exclude = [
     "examples/**",
     "src/livesync/_protos/**",
 ]
-
-reportImplicitOverride = true
 
 reportImportCycles = false
 reportPrivateUsage = false
@@ -220,7 +220,7 @@ known-first-party = ["livesync", "tests"]
 "bin/**.py" = ["T201", "T203"]
 "scripts/**.py" = ["T201", "T203"]
 "tests/**.py" = ["T201", "T203"]
-"examples/**.py" = ["T201", "T203", "ARG002"]
+"examples/**.py" = ["T201", "T203", "ARG001", "ARG002"]
 "src/livesync/_protos/**.py" = ["ARG002", "I001", "F401"]
 "src/livesync/_protos/**.pyi" = ["I001", "TC004"]
-"src/livesync/prebuilt/callbacks/monitoring_callback.py" = ["T201"]
+"src/livesync/callbacks/callbacks.py" = ["T201"]

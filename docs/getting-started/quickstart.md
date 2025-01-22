@@ -1,71 +1,78 @@
 # Quick Start
 
-This guide walks you through creating your first LiveSync pipeline for media processing.
+Let's start with a simple example that demonstrates the core concepts of LiveSync.
 
-## Creating a Simple Video Pipeline
+## Installation
 
-LiveSync uses a graph-based architecture where nodes represent different processing steps. Let's create a simple video processing pipeline.
+```bash
+pip install livesync
+```
 
-### Example: Webcam Recording Pipeline
+## Basic Example
+
+Here's a minimal example that shows how LiveSync processes data streams:
 
 ```python
-from livesync import Graph
-from livesync.prebuilt.nodes import WebcamNode, FrameRateNode, VideoRecorderNode
-from livesync.prebuilt.callbacks import NodeMonitoringCallback
+import livesync as ls
+from livesync import layers
 
-# Create a new graph
-workflow = Graph()
+# Create two input streams that generate numbers
+x1 = ls.PeriodicConstantInput(2, interval=1.0)    # Generates '2' every second
+x2 = ls.PeriodicConstantInput(4, interval=1.0)    # Generates '4' every second
 
-# Create nodes
-node_x = WebcamNode(name="webcam", device_id=0, fps=30)    # Capture frames
-node_y = FrameRateNode(name="frame_rate", fps=10)          # Control frame rate
-node_z = VideoRecorderNode(filename="./output.mp4", fps=5) # Record video
+# Create processing layers
+f1 = layers.Multiply(multiplier=4)                # Multiplies input by 4
+f2 = layers.Multiply(multiplier=4)                # Multiplies input by 4
 
-# Add nodes to graph
-workflow.add_node(node_x)
-workflow.add_node(node_y)
-workflow.add_node(node_z)
+# Build processing chain
+h1 = f1(x1)                                       # 2 * 4 = 8
+h2 = f2(x2)                                       # 4 * 4 = 16
 
-# Connect nodes
-workflow.add_edge(node_x, node_y)
-workflow.add_edge(node_y, node_z)
+# Merge streams and process
+u = layers.Merge([h1, h2], how="inner")          # Waits for both inputs
+y = layers.Lambda(
+    function=lambda inputs: inputs[h1.name] * inputs[h2.name]
+)(u)                                             # 8 * 16 = 128
 
 # Run the pipeline
-with workflow.compile() as runner:
-    try:
-        run = runner.run(callback=NodeMonitoringCallback())
-        print(run)
-    except KeyboardInterrupt:
-        print("\nKeyboardInterrupt: Stopping runner.")
+sync = ls.Sync(inputs=[x1, x2], outputs=[y])
+with sync.compile() as runner:
+    runner.run(
+        continuous=False,                         # Run once and stop
+        callback=ls.LoggingCallback()
+    )
 ```
 
 This pipeline:
 
-1. Captures video from your webcam at 30 FPS
-2. Processes it through a frame rate controller to achieve 10 FPS
-3. Records the output to a video file at 10 FPS
-
-## Running the Example
-
-Save the script as `webcam_recording.py` and run:
-
-```bash
-python webcam_recording.py
+```
+  ●  Final output: 128
+  │
+  ●  Multiply merged values
+  │
+  ○  Merge (waits for both inputs)
+  │
+  ○──●
+  │  │
+  │  ●  Multiply by 4 (16)
+  │  │
+  │  ◇  Input: 4
+  │
+  ●  Multiply by 4 (8)
+  │
+  ◇  Input: 2
 ```
 
-The pipeline will start capturing from your webcam and save the processed video to `output.mp4`.
+## Understanding the Flow
 
-## Pipeline Visualization
+1. **Input Streams**: Two periodic inputs generate constant values
+2. **Processing Layers**: Each input is multiplied by 4
+3. **Merge Operation**: Streams are combined using "inner" mode (waits for both inputs)
+4. **Final Processing**: Merged values are multiplied together
+5. **Execution**: Pipeline runs once and logs the result
 
-```
-(Webcam) => (Frame Rate) => (Video Recorder)
-   30fps        10fps           10fps
-```
+## Next Steps
 
----
-
-**Next Steps**
-
-- Learn about more complex pipelines in the [User Guide](../user-guide/core-concepts.md)
-- Explore pre-built nodes in the [Node Reference](../reference/nodes.md)
-- See more examples in the [Examples](../examples/basic.md) section
+- Try more complex examples in [Basic Examples](./basic.md)
+- Learn about media processing in [Advanced Examples](./advanced.md)
+- Explore core concepts in the [User Guide](../user-guide/core-concepts.md)
