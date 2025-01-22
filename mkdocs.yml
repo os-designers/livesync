@@ -52,9 +52,6 @@ nav:
       - Quick Start: getting-started/quickstart.md
   - User Guide:
       - Core Concepts: user-guide/core-concepts.md
-      - Nodes: user-guide/nodes.md
-      - Graphs: user-guide/graphs.md
-      - Frames: user-guide/frames.md
   - Examples:
       - Basic Examples: examples/basic.md
       - Advanced Examples: examples/advanced.md
