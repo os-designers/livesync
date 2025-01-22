@@ -373,6 +373,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installing-ffmpeg" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installing FFmpeg
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -534,7 +549,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/nodes/" class="md-nav__link">
+      <a href="../../user-guide/nodes.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -555,7 +570,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/graphs/" class="md-nav__link">
+      <a href="../../user-guide/graphs.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -576,7 +591,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/frames/" class="md-nav__link">
+      <a href="../../user-guide/frames.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -727,6 +742,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installing-ffmpeg" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installing FFmpeg
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -790,24 +820,38 @@
 
 
 <h1 id="installation">Installation</h1>
-<p>LiveSync is a <strong>graph-based video processing framework</strong> designed for real-time applications. This guide will walk you through setting it up on your system.</p>
+<p>LiveSync is a real-time media processing framework that helps you build efficient video and audio pipelines. This guide will walk you through the setup process.</p>
 <h2 id="requirements">Requirements</h2>
 <ul>
 <li><strong>Python 3.10 or higher</strong></li>
-<li><strong>pip</strong> (latest version recommended)</li>
-<li><strong>FFmpeg</strong> (for video processing)</li>
+<li><strong>FFmpeg</strong> (required for media processing)</li>
 <li><strong>OpenCV</strong> (automatically installed with LiveSync)</li>
 </ul>
+<h3 id="installing-ffmpeg">Installing FFmpeg</h3>
+<p>FFmpeg is required for media processing. Here's how to install it:</p>
+<p><strong>Windows</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>choco<span class="w"> </span>install<span class="w"> </span>ffmpeg
+</code></pre></div>
+<p><strong>macOS</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>brew<span class="w"> </span>install<span class="w"> </span>ffmpeg
+</code></pre></div>
+<p><strong>Linux (Ubuntu/Debian)</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>ffmpeg
+</code></pre></div>
+<p>Verify FFmpeg installation:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ffmpeg<span class="w"> </span>-version
+</code></pre></div>
 <h2 id="installing-livesync">Installing LiveSync</h2>
 <h3 id="option-1-using-rye-recommended">Option 1: Using <code>rye</code> (Recommended)</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>rye<span class="w"> </span>add<span class="w"> </span>livesync-io
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>rye<span class="w"> </span>add<span class="w"> </span>livesync-io
 </code></pre></div>
 <h3 id="option-2-using-pip">Option 2: Using <code>pip</code></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>livesync-io
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>pip<span class="w"> </span>install<span class="w"> </span>livesync-io
 </code></pre></div>
 <h2 id="verifying-installation">Verifying Installation</h2>
 <p>After installation, verify that LiveSync is installed correctly:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import livesync; print(livesync.__version__)&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import livesync; print(livesync.__version__)&quot;</span>
 </code></pre></div>
 <p>If the installation was successful, you should see the LiveSync version number.</p>
 <hr />

@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://os-designers.github.io/livesync/examples/basic/">
       
       
-        <link rel="prev" href="../../user-guide/frames/">
+        <link rel="prev" href="../../user-guide/core-concepts/">
       
       
         <link rel="next" href="../advanced/">
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#basic-examples" class="md-skip">
+        <a href="#quick-start" class="md-skip">
           Skip to content
         </a>
       
@@ -443,7 +443,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/nodes/" class="md-nav__link">
+      <a href="../../user-guide/nodes.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -464,7 +464,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/graphs/" class="md-nav__link">
+      <a href="../../user-guide/graphs.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -485,7 +485,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/frames/" class="md-nav__link">
+      <a href="../../user-guide/frames.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -607,28 +607,19 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#linear-chain-processing" class="md-nav__link">
+  <a href="#creating-a-simple-video-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
-      Linear Chain Processing
+      Creating a Simple Video Pipeline
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Linear Chain Processing">
+    <nav class="md-nav" aria-label="Creating a Simple Video Pipeline">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#class-based-approach" class="md-nav__link">
+  <a href="#example-webcam-recording-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
-      Class-based Approach
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#functional-approach" class="md-nav__link">
-    <span class="md-ellipsis">
-      Functional Approach
+      Example: Webcam Recording Pipeline
     </span>
   </a>
   
@@ -636,6 +627,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running the Example
+    </span>
+  </a>
   
 </li>
       
@@ -703,28 +703,19 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#linear-chain-processing" class="md-nav__link">
+  <a href="#creating-a-simple-video-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
-      Linear Chain Processing
+      Creating a Simple Video Pipeline
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Linear Chain Processing">
+    <nav class="md-nav" aria-label="Creating a Simple Video Pipeline">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#class-based-approach" class="md-nav__link">
+  <a href="#example-webcam-recording-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
-      Class-based Approach
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#functional-approach" class="md-nav__link">
-    <span class="md-ellipsis">
-      Functional Approach
+      Example: Webcam Recording Pipeline
     </span>
   </a>
   
@@ -732,6 +723,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running the Example
+    </span>
+  </a>
   
 </li>
       
@@ -753,47 +753,55 @@
   
 
 
-<h1 id="basic-examples">Basic Examples</h1>
-<h2 id="linear-chain-processing">Linear Chain Processing</h2>
-<p>LiveSync supports both class-based and functional approaches for creating nodes. Here are two equivalent implementations:</p>
-<h3 id="class-based-approach">Class-based Approach</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">livesync</span><span class="w"> </span><span class="kn">import</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">Graph</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">NumberNode</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number to output&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">number</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="k">class</span><span class="w"> </span><span class="nc">MultiplierNode</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Source node name&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">factor</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Multiplication factor&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>        <span class="n">input_value</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        <span class="k">return</span> <span class="n">input_value</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">factor</span>
+<h1 id="quick-start">Quick Start</h1>
+<p>This guide walks you through creating your first LiveSync pipeline for media processing.</p>
+<h2 id="creating-a-simple-video-pipeline">Creating a Simple Video Pipeline</h2>
+<p>LiveSync uses a graph-based architecture where nodes represent different processing steps. Let's create a simple video processing pipeline.</p>
+<h3 id="example-webcam-recording-pipeline">Example: Webcam Recording Pipeline</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">livesync</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ls</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">livesync</span><span class="w"> </span><span class="kn">import</span> <span class="n">layers</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Create input stream</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">x</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">WebcamInput</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;webcam&quot;</span><span class="p">,</span> <span class="n">device_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Create processing layers</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">f1</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">FpsControl</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;frame_rate&quot;</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">f2</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">VideoRecorder</span><span class="p">(</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;video_recorder&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;./output.mp4&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">fps</span><span class="o">=</span><span class="n">f1</span><span class="o">.</span><span class="n">fps</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="p">)</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">y</span> <span class="o">=</span> <span class="n">f2</span><span class="p">(</span><span class="n">f1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1"># Build pipeline</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="n">workflow</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">node_x</span> <span class="o">=</span> <span class="n">NumberNode</span><span class="p">(</span><span class="n">number</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="n">node_y</span> <span class="o">=</span> <span class="n">MultiplierNode</span><span class="p">(</span><span class="n">factor</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">node_x</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1"># Create and run pipeline</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="n">sync</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">Sync</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="n">y</span><span class="p">])</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="k">with</span> <span class="n">sync</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span> <span class="k">as</span> <span class="n">runner</span><span class="p">:</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n">run</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">callback</span><span class="o">=</span><span class="n">ls</span><span class="o">.</span><span class="n">LoggingCallback</span><span class="p">())</span>
 </code></pre></div>
-<h3 id="functional-approach">Functional Approach</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">livesync</span><span class="w"> </span><span class="kn">import</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Graph</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># Define processing functions</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">return_two</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="k">return</span> <span class="mi">2</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">multiply_by_three</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">input_value</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_input</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="k">return</span> <span class="n">input_value</span> <span class="o">*</span> <span class="mi">3</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1"># Build pipeline</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="n">workflow</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="n">node_x</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">step_func</span><span class="o">=</span><span class="n">return_two</span><span class="p">)</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="n">node_y</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">step_func</span><span class="o">=</span><span class="n">multiply_by_three</span><span class="p">)</span>
+<p>This pipeline:</p>
+<ol>
+<li>Captures video from your webcam at 30 FPS</li>
+<li>Processes it through a frame rate controller to achieve 10 FPS</li>
+<li>Records the output to a video file</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>  ●  (f2): Records processed frames to MP4 file
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  │
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  ●  (f1): Controls frame rate of the stream
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  │
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  ◇  (x): Captures frames from webcam
 </code></pre></div>
+<h2 id="running-the-example">Running the Example</h2>
+<p>Save the script as <code>webcam_fps_control.py</code> and run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>rye<span class="w"> </span>run<span class="w"> </span>examples/04_webcam_fps_control.py
+</code></pre></div>
+<p>The pipeline will start capturing from your webcam and save the processed video to <code>output.mp4</code>.</p>
+<hr />
+<p><strong>Next Steps</strong></p>
+<ul>
+<li>Learn about more complex pipelines in the <a href="../../user-guide/core-concepts/">User Guide</a></li>
+<li>See more examples in the <a href="../advanced/">Examples</a> section</li>
+</ul>
 
 
 

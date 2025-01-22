@@ -441,7 +441,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/nodes/" class="md-nav__link">
+      <a href="../../user-guide/nodes.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -462,7 +462,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/graphs/" class="md-nav__link">
+      <a href="../../user-guide/graphs.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -483,7 +483,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/frames/" class="md-nav__link">
+      <a href="../../user-guide/frames.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -626,37 +626,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#media-processing-pipeline" class="md-nav__link">
+  <a href="#media-synchronization-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
-      Media Processing Pipeline
+      Media Synchronization Pipeline
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Media Processing Pipeline">
+    <nav class="md-nav" aria-label="Media Synchronization Pipeline">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#video-recording" class="md-nav__link">
+  <a href="#example-synchronized-recording-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
-      Video Recording
+      Example: Synchronized Recording Pipeline
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#audiovideo-synchronization" class="md-nav__link">
+  <a href="#key-concepts" class="md-nav__link">
     <span class="md-ellipsis">
-      Audio/Video Synchronization
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#remote-processing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Remote Processing
+      Key Concepts
     </span>
   </a>
   
@@ -664,6 +655,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running the Example
+    </span>
+  </a>
   
 </li>
       
@@ -710,37 +710,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#media-processing-pipeline" class="md-nav__link">
+  <a href="#media-synchronization-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
-      Media Processing Pipeline
+      Media Synchronization Pipeline
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Media Processing Pipeline">
+    <nav class="md-nav" aria-label="Media Synchronization Pipeline">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#video-recording" class="md-nav__link">
+  <a href="#example-synchronized-recording-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
-      Video Recording
+      Example: Synchronized Recording Pipeline
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#audiovideo-synchronization" class="md-nav__link">
+  <a href="#key-concepts" class="md-nav__link">
     <span class="md-ellipsis">
-      Audio/Video Synchronization
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#remote-processing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Remote Processing
+      Key Concepts
     </span>
   </a>
   
@@ -748,6 +739,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running the Example
+    </span>
+  </a>
   
 </li>
       
@@ -770,65 +770,71 @@
 
 
 <h1 id="advanced-examples">Advanced Examples</h1>
-<h2 id="media-processing-pipeline">Media Processing Pipeline</h2>
-<h3 id="video-recording">Video Recording</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">livesync</span><span class="w"> </span><span class="kn">import</span> <span class="n">Graph</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">livesync.prebuilt.nodes</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebcamNode</span><span class="p">,</span> <span class="n">FrameRateNode</span><span class="p">,</span> <span class="n">VideoRecorderNode</span>
+<p>Building on the basic concepts, let's explore more complex pipelines with media synchronization and stream merging.</p>
+<h2 id="media-synchronization-pipeline">Media Synchronization Pipeline</h2>
+<p>This example demonstrates how to build a pipeline that synchronizes video and audio streams with precise timing control.</p>
+<h3 id="example-synchronized-recording-pipeline">Example: Synchronized Recording Pipeline</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">livesync</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ls</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">livesync</span><span class="w"> </span><span class="kn">import</span> <span class="n">layers</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">workflow</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Configure nodes</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">webcam</span> <span class="o">=</span> <span class="n">WebcamNode</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;webcam&quot;</span><span class="p">,</span> <span class="n">device_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">frame_rate</span> <span class="o">=</span> <span class="n">FrameRateNode</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;frame_rate&quot;</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">recorder</span> <span class="o">=</span> <span class="n">VideoRecorderNode</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;recorder&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;output.mp4&quot;</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Build pipeline</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">webcam</span><span class="p">)</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">frame_rate</span><span class="p">)</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">recorder</span><span class="p">)</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">webcam</span><span class="p">,</span> <span class="n">frame_rate</span><span class="p">)</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">frame_rate</span><span class="p">,</span> <span class="n">recorder</span><span class="p">)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Create input streams</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">x1</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">WebcamInput</span><span class="p">(</span><span class="n">device_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">x2</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">MicrophoneInput</span><span class="p">(</span><span class="n">sample_rate</span><span class="o">=</span><span class="mi">44100</span><span class="p">,</span> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Create processing layers</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">f1</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">DelayLayer</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>              <span class="c1"># Add 1s delay to audio</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">f2</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">MediaSyncLayer</span><span class="p">(</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">buffer_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">max_threshold</span><span class="o">=</span><span class="mf">0.005</span>                           <span class="c1"># 5ms sync threshold</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="p">)</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">f3</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">MediaRecorderLayer</span><span class="p">(</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;./output.mp4&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">fps</span><span class="o">=</span><span class="mi">30</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="p">)</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="c1"># Build pipeline</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="n">h</span> <span class="o">=</span> <span class="n">f1</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>                                        <span class="c1"># Delayed audio</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="n">u</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">Merge</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="n">h</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">)</span>           <span class="c1"># Merge streams</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="n">y</span> <span class="o">=</span> <span class="n">f3</span><span class="p">(</span><span class="n">f2</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>                                     <span class="c1"># Sync and record</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="c1"># Create and run pipeline</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="n">sync</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">Sync</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">],</span> <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="n">y</span><span class="p">])</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="k">with</span> <span class="n">sync</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span> <span class="k">as</span> <span class="n">runner</span><span class="p">:</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">callback</span><span class="o">=</span><span class="n">ls</span><span class="o">.</span><span class="n">LoggingCallback</span><span class="p">())</span>
 </code></pre></div>
-<h3 id="audiovideo-synchronization">Audio/Video Synchronization</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">livesync</span><span class="w"> </span><span class="kn">import</span> <span class="n">Graph</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">livesync.prebuilt.nodes</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebcamNode</span><span class="p">,</span> <span class="n">MicrophoneNode</span><span class="p">,</span> <span class="n">MediaSyncNode</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">workflow</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1"># Create media sources</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">video</span> <span class="o">=</span> <span class="n">WebcamNode</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;webcam&quot;</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">audio</span> <span class="o">=</span> <span class="n">MicrophoneNode</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;mic&quot;</span><span class="p">,</span> <span class="n">sample_rate</span><span class="o">=</span><span class="mi">44100</span><span class="p">)</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1"># Configure sync node</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">sync</span> <span class="o">=</span> <span class="n">MediaSyncNode</span><span class="p">(</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sync&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="n">buffer_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="n">max_sync_threshold_us</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    <span class="n">audio_node</span><span class="o">=</span><span class="s2">&quot;mic&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    <span class="n">video_node</span><span class="o">=</span><span class="s2">&quot;webcam&quot;</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="p">)</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="c1"># Build pipeline</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="n">sync</span><span class="p">)</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="n">sync</span><span class="p">)</span>
+<p>This pipeline:</p>
+<ol>
+<li>Captures video from webcam and audio from microphone</li>
+<li>Adds a 1-second delay to the audio stream</li>
+<li>Merges streams with "outer" mode (processes when either stream has data)</li>
+<li>Synchronizes video and audio within 5ms precision</li>
+<li>Records the synchronized output to MP4</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>  ●  (f3): Records synchronized media to MP4 file
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  │
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  ●  (f2): Synchronizes streams within 5ms threshold
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  │
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  ○  (u): Merges streams (processes on any input)
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>  │
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>  ○──●  (waits for either stream)
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>  │  │
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>  │  ●  (f1): Delays audio by 1 second
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>  │  │
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>  │  ◇  (x2): Microphone input
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>  │
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>  ◇  (x1): Webcam input
 </code></pre></div>
-<h3 id="remote-processing">Remote Processing</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">livesync</span><span class="w"> </span><span class="kn">import</span> <span class="n">Graph</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">livesync.prebuilt</span><span class="w"> </span><span class="kn">import</span> <span class="n">RemoteNode</span><span class="p">,</span> <span class="n">WebcamNode</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">workflow</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># Configure nodes</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">webcam</span> <span class="o">=</span> <span class="n">WebcamNode</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;webcam&quot;</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">remote</span> <span class="o">=</span> <span class="n">RemoteNode</span><span class="p">(</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;remote&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">endpoints</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;localhost:50051&quot;</span><span class="p">],</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">settings</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;resolution_node&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;target_height&quot;</span><span class="p">:</span> <span class="s2">&quot;320&quot;</span><span class="p">}}</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">)</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">webcam</span><span class="p">,</span> <span class="n">remote</span><span class="p">)</span>
+<h3 id="key-concepts">Key Concepts</h3>
+<ul>
+<li><strong>Stream Merging</strong>: The <code>how="outer"</code> parameter in <code>Merge</code> means the layer processes whenever either input stream has data</li>
+<li><strong>Media Sync</strong>: <code>MediaSyncLayer</code> ensures audio and video stay synchronized within the specified threshold</li>
+<li><strong>Delay Control</strong>: <code>DelayLayer</code> can adjust timing relationships between streams</li>
+</ul>
+<h2 id="running-the-example">Running the Example</h2>
+<p>Save the script as <code>media_sync_recording.py</code> and run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>rye<span class="w"> </span>run<span class="w"> </span>examples/06_media_sync_recording.py
 </code></pre></div>
+<p>The pipeline will start capturing synchronized audio and video, saving the result to <code>output.mp4</code>.</p>
 
 
 

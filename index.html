@@ -315,15 +315,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Features
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#documentation-overview" class="md-nav__link">
     <span class="md-ellipsis">
       Documentation Overview
@@ -526,7 +517,7 @@
   
   
     <li class="md-nav__item">
-      <a href="user-guide/nodes/" class="md-nav__link">
+      <a href="user-guide/nodes.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -547,7 +538,7 @@
   
   
     <li class="md-nav__item">
-      <a href="user-guide/graphs/" class="md-nav__link">
+      <a href="user-guide/graphs.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -568,7 +559,7 @@
   
   
     <li class="md-nav__item">
-      <a href="user-guide/frames/" class="md-nav__link">
+      <a href="user-guide/frames.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -731,15 +722,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Features
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#documentation-overview" class="md-nav__link">
     <span class="md-ellipsis">
       Documentation Overview
@@ -776,27 +758,22 @@
 
 
 <h1 id="livesync">LiveSync</h1>
-<p>LiveSync is a modular graph-based framework designed for real-time media processing and synchronization. It provides an elegant solution for building complex media processing pipelines while maintaining precise timing and synchronization between different data streams.</p>
+<p>LiveSync is Keras-inspired asynchronous stream processing framework for building real-time media applications. LiveSync provides a flexible layer system for creating both synchronous and asynchronous media processing pipelines.</p>
 <h2 id="why-livesync">Why LiveSync?</h2>
 <ul>
-<li><strong>Graph-Based Architecture</strong>: Build complex processing pipelines using a simple, intuitive DAG structure</li>
-<li><strong>Real-Time Processing</strong>: Optimized for handling continuous data streams with minimal latency</li>
-<li><strong>Flexible Node System</strong>: Create custom processing nodes or use pre-built ones for common media operations</li>
-<li><strong>Async-First Design</strong>: Leverages Python's asyncio for efficient concurrent processing</li>
+<li><strong>Layer-Based Architecture</strong>: Build complex processing pipelines using a Keras-inspired layer system</li>
+<li><strong>Async-First Design</strong>: Built from the ground up for asynchronous stream processing</li>
+<li><strong>Media Processing</strong>: Optimized for real-time audio and video processing</li>
+<li><strong>Flexible Stream System</strong>: Support for both synchronous and asynchronous data flows</li>
+<li><strong>Remote Processing</strong>: Built-in gRPC support for distributed processing</li>
 </ul>
 <h2 id="get-started">Get Started</h2>
 <p>New to LiveSync? Follow the <a href="getting-started/installation/">Installation Guide</a> to set up your environment and run your first pipeline.</p>
 <p>For a quick introduction, check out our <a href="getting-started/quickstart/">Quick Start</a>.</p>
-<h2 id="features">Features</h2>
-<p>✔ <strong>Real-time media processing</strong><br />
-✔ <strong>Automatic stream synchronization</strong><br />
-✔ <strong>Modular node system</strong><br />
-✔ <strong>Distributed processing via gRPC</strong><br />
-✔ <strong>Live streaming capabilities</strong></p>
 <h2 id="documentation-overview">Documentation Overview</h2>
 <ul>
 <li><strong><a href="getting-started/installation/">Getting Started</a></strong> – Install and set up LiveSync.</li>
-<li><strong><a href="user-guide/core-concepts/">User Guide</a></strong> – Learn about core concepts like nodes, graphs, and frames.</li>
+<li><strong><a href="user-guide/core-concepts/">User Guide</a></strong> – Learn about core concepts like streams, inputs, layers, and sync.</li>
 <li><strong><a href="examples/basic/">Examples</a></strong> – Sample pipelines and advanced use cases.</li>
 </ul>
 <h2 id="get-involved">Get Involved</h2>
