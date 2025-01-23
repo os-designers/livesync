@@ -5,7 +5,7 @@ import qasync  # type: ignore
 from PyQt6.QtWidgets import QApplication
 
 from .workflow import workflow_manager
-from .main_window import MainWindow, StreamSettings
+from .ui import MainWindow, StreamSettings
 
 
 class Application:

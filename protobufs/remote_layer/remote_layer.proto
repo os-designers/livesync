@@ -9,6 +9,17 @@ service RemoteLayer {
   rpc Call(CallRequest) returns (CallResponse);
 }
 
+enum DataType {
+  UNKNOWN = 0;
+  BYTES = 1;
+  STRING = 2;
+  FLOAT = 3;
+  INT = 4;
+  BOOL = 5;
+  VIDEO_FRAME = 6;
+  AUDIO_FRAME = 7;
+}
+
 message InitRequest {
   google.protobuf.Struct settings = 1;
 }
@@ -20,10 +31,12 @@ message InitResponse {
 
 message CallRequest {
   bytes x = 1;
+  DataType type = 2;
 }
 
 message CallResponse {
   bool success = 1;
   optional bytes y = 2;
-  string error_message = 3;
+  DataType type = 3;
+  string error_message = 4;
 }

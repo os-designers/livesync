@@ -6,9 +6,9 @@ import cv2
 import livesync as ls
 
 
-async def on_call(ctx: ls.RemoteLayerServicer, x: bytes) -> ls.VideoFrame | None:
+async def on_call(ctx: ls.RemoteLayerServicer, x: ls.VideoFrame) -> ls.VideoFrame | None:
     try:
-        frame = ls.VideoFrame.frombytes(x)
+        frame = x
 
         # Convert to grayscale based on input buffer type
         if frame.buffer_type == "rgba":
@@ -31,6 +31,7 @@ async def on_call(ctx: ls.RemoteLayerServicer, x: bytes) -> ls.VideoFrame | None
         frame = ls.VideoFrame(
             data=final_frame, width=frame.width, height=frame.height, buffer_type=frame.buffer_type, pts=frame.pts  # type: ignore
         )
+        print(frame)
         return frame
     except Exception as e:
         print(f"Error converting frame to gray: {e}")

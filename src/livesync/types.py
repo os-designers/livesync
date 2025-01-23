@@ -7,4 +7,6 @@ from .frames.video_frame import VideoFrame
 
 MediaFrameType = VideoFrame | AudioFrame
 DataType = NDArray[Any] | str | float | int | bool | MediaFrameType
+BytesableType = bytes | str | float | int | bool | MediaFrameType
+
 StreamDataType = DataType | dict[str, MediaFrameType] | tuple[MediaFrameType | None, ...]

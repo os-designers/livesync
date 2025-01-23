@@ -1,6 +1,7 @@
 import os
 import asyncio
 from typing import Any
+import struct
 
 import grpc  # type: ignore
 from google.protobuf.struct_pb2 import Struct
@@ -16,6 +17,7 @@ from ..._protos.remote_layer.remote_layer_pb2 import (
     InitRequest,
     CallResponse,
     InitResponse,
+    DataType as ProtoDataType,
 )
 from ..._protos.remote_layer.remote_layer_pb2_grpc import RemoteLayerStub
 
@@ -139,8 +141,20 @@ class RemoteLayer(CallableLayer[DataType, DataType | None]):
                 logger.error(f"No active stub for endpoint {endpoint}")
                 raise Exception(f"No active stub for endpoint {endpoint}")
 
-            if isinstance(x, VideoFrame | AudioFrame):
-                request = CallRequest(x=bytes(x))
+            if isinstance(x, VideoFrame):
+                request = CallRequest(x=bytes(x), type=ProtoDataType.VIDEO_FRAME)
+            elif isinstance(x, AudioFrame):
+                request = CallRequest(x=bytes(x), type=ProtoDataType.AUDIO_FRAME)
+            elif isinstance(x, bytes):
+                request = CallRequest(x=x, type=ProtoDataType.BYTES)
+            elif isinstance(x, str):
+                request = CallRequest(x=x.encode(), type=ProtoDataType.STRING)
+            elif isinstance(x, float):
+                request = CallRequest(x=struct.pack("d", x), type=ProtoDataType.FLOAT)
+            elif isinstance(x, int):
+                request = CallRequest(x=struct.pack("q", x), type=ProtoDataType.INT)
+            elif isinstance(x, bool):
+                request = CallRequest(x=struct.pack("?", x), type=ProtoDataType.BOOL)
             else:
                 logger.error(f"Unsupported frame type: {type(x)}")
                 raise ValueError(f"Unsupported frame type: {type(x)}")
@@ -151,14 +165,26 @@ class RemoteLayer(CallableLayer[DataType, DataType | None]):
                 logger.error(f"Error processing frame on gRPC: {response.error_message}")  # type: ignore
                 return None
 
-            if len(response.y) == 0 or response.y is None:  # type: ignore[arg-type]
+            # Convert response based on type
+            if len(response.y) == 0 or response.y is None:  # type: ignore
                 return None
-            elif isinstance(x, VideoFrame):  # type: ignore
+
+            if response.type == ProtoDataType.VIDEO_FRAME:  # type: ignore
                 return VideoFrame.frombytes(response.y)  # type: ignore
-            elif isinstance(x, AudioFrame):  # type: ignore
+            elif response.type == ProtoDataType.AUDIO_FRAME:  # type: ignore
                 return AudioFrame.frombytes(response.y)  # type: ignore
+            elif response.type == ProtoDataType.BYTES:  # type: ignore
+                return response.y  # type: ignore
+            elif response.type == ProtoDataType.STRING:  # type: ignore
+                return response.y.decode()  # type: ignore
+            elif response.type == ProtoDataType.FLOAT:  # type: ignore
+                return struct.unpack("d", response.y)[0]  # type: ignore
+            elif response.type == ProtoDataType.INT:  # type: ignore
+                return struct.unpack("q", response.y)[0]  # type: ignore
+            elif response.type == ProtoDataType.BOOL:  # type: ignore
+                return struct.unpack("?", response.y)[0]  # type: ignore
             else:
-                raise ValueError(f"Unsupported frame type: {type(x)}")
+                raise ValueError(f"Unsupported response type: {response.type}")  # type: ignore
 
         except grpc.RpcError as e:
             logger.error(f"Call RPC failed: {e}")

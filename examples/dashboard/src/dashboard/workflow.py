@@ -5,19 +5,7 @@ from PyQt6.QtGui import QImage, QPixmap
 import livesync as ls
 from livesync import layers
 
-from .main_window import MainWindow
-
-_WEBCAM_FPS = 30
-_window: MainWindow | None = None
-
-
-async def update_frame(x: ls.VideoFrame) -> None:
-    global _window
-    height, width = x.data.shape[:2]
-    bytes_per_line = 3 * width
-    qimage = QImage(x.data.tobytes(), width, height, bytes_per_line, QImage.Format.Format_RGB888)
-    pixmap = QPixmap.fromImage(qimage)
-    _window.update_frame(pixmap)  # type: ignore
+from .ui import MainWindow
 
 
 @dataclass
@@ -45,7 +33,7 @@ class WorkflowManager:
             self.current_session = None
 
         # Create new workflow
-        x = layers.WebcamInput(device_id=webcam_device_id, fps=_WEBCAM_FPS)
+        x = layers.WebcamInput(device_id=webcam_device_id)
 
         # Option 1. Use local frame rate node
         f1 = layers.FpsControlLayer(fps=target_fps)
@@ -58,6 +46,15 @@ class WorkflowManager:
         # )
 
         f2 = layers.ResolutionControlLayer(target_height=target_resolution)
+
+        async def update_frame(x: ls.VideoFrame) -> None:
+            global workflow_manager
+            height, width = x.data.shape[:2]
+            bytes_per_line = 3 * width
+            qimage = QImage(x.data.tobytes(), width, height, bytes_per_line, QImage.Format.Format_RGB888)
+            pixmap = QPixmap.fromImage(qimage)
+            _window.update_frame(pixmap)  # type: ignore
+
         f3 = layers.Lambda(function=update_frame)
 
         y = f3(f2(f1(x)))

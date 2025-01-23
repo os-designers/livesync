@@ -8,7 +8,7 @@ import livesync as ls
 _settings = {"alpha": 1.0, "beta": 0.0}
 
 
-async def on_call(ctx: ls.RemoteLayerServicer, x: bytes) -> ls.VideoFrame | None:
+async def on_call(ctx: ls.RemoteLayerServicer, x: ls.VideoFrame) -> ls.VideoFrame | None:
     """Adjusts frame brightness
 
     - alpha > 1.0: increases brightness (e.g. 1.5 = 50% brighter)
@@ -20,10 +20,8 @@ async def on_call(ctx: ls.RemoteLayerServicer, x: bytes) -> ls.VideoFrame | None
         raise RuntimeError("Server not initialized")
 
     try:
-        frame = ls.VideoFrame.frombytes(x)
-
+        frame = x
         adjusted_frame = cv2.convertScaleAbs(frame.data, alpha=_settings["alpha"], beta=_settings["beta"])  # type: ignore
-
         frame = ls.VideoFrame(
             data=adjusted_frame, width=frame.width, height=frame.height, buffer_type=frame.buffer_type, pts=frame.pts  # type: ignore
         )
