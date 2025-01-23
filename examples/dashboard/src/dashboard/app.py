@@ -4,8 +4,8 @@ import asyncio
 import qasync  # type: ignore
 from PyQt6.QtWidgets import QApplication
 
-from .workflow import workflow_manager
 from .ui import MainWindow, StreamSettings
+from .workflow import workflow_manager
 
 
 class Application:

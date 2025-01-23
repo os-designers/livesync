@@ -119,7 +119,9 @@ class MediaStreamRecorderLayer(CallableLayer[MediaFrameType | dict[str, MediaFra
 
                 # Convert numpy array to PyAV AudioFrame
                 av_audio_frame = av.AudioFrame.from_ndarray(
-                    frame.data.T, format=self.audio_format, layout=frame.channel_layout  # type: ignore
+                    frame.data.T,  # type: ignore
+                    format=self.audio_format,
+                    layout=frame.channel_layout,  # type: ignore
                 )
                 av_audio_frame.sample_rate = sample_rate
                 av_audio_frame.pts = frame.pts  # type: ignore

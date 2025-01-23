@@ -25,13 +25,14 @@ class RemoteLayerServer:
 
     Example:
     ```python
-
     async def on_init(ctx: ls.RemoteLayerServicer, **settings):
         print(f"Initializing with settings: {settings}")
+
 
     async def on_call(ctx: ls.RemoteLayerServicer, x: bytes) -> bytes:
         print(x)
         return x
+
 
     server = RemoteLayerServer(on_call=on_call, on_init=on_init)
     await server.start()

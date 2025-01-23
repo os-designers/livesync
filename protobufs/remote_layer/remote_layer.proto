@@ -11,13 +11,14 @@ service RemoteLayer {
 
 enum DataType {
   UNKNOWN = 0;
-  BYTES = 1;
-  STRING = 2;
-  FLOAT = 3;
-  INT = 4;
-  BOOL = 5;
-  VIDEO_FRAME = 6;
-  AUDIO_FRAME = 7;
+  NONE = 1;
+  BYTES = 2;
+  STRING = 3;
+  FLOAT = 4;
+  INT = 5;
+  BOOL = 6;
+  VIDEO_FRAME = 7;
+  AUDIO_FRAME = 8;
 }
 
 message InitRequest {

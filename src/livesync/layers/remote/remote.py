@@ -1,23 +1,23 @@
 import os
+import struct
 import asyncio
 from typing import Any
-import struct
 
 import grpc  # type: ignore
 from google.protobuf.struct_pb2 import Struct
 
-from ...types import DataType
+from ...types import BytesableType
 from ..._utils.logs import logger
 from ...frames.audio_frame import AudioFrame
 from ...frames.video_frame import VideoFrame
 from ..core.callable_layer import CallableLayer
 from ..._utils.round_robin_selector import RoundRobinSelector
 from ..._protos.remote_layer.remote_layer_pb2 import (
+    DataType as ProtoDataType,
     CallRequest,
     InitRequest,
     CallResponse,
     InitResponse,
-    DataType as ProtoDataType,
 )
 from ..._protos.remote_layer.remote_layer_pb2_grpc import RemoteLayerStub
 
@@ -28,7 +28,7 @@ _GRPC_OPTIONS = [
 ]
 
 
-class RemoteLayer(CallableLayer[DataType, DataType | None]):
+class RemoteLayer(CallableLayer[BytesableType, BytesableType | None]):
     """A layer that represents a GRPC remote endpoint connection.
 
     This layer is used to connect to a remote endpoint and process frames.
@@ -47,7 +47,7 @@ class RemoteLayer(CallableLayer[DataType, DataType | None]):
     f2 = layers.RemoteLayer(
         endpoint="localhost:50051",
         model_path="yolo.pt",  # This will be passed to server's on_init
-        threshold=0.5          # as {"model_path": "yolo.pt", "threshold": 0.5}
+        threshold=0.5,  # as {"model_path": "yolo.pt", "threshold": 0.5}
     )
     y2 = f2(y)
     ```
@@ -131,7 +131,7 @@ class RemoteLayer(CallableLayer[DataType, DataType | None]):
         except grpc.RpcError as e:
             raise e
 
-    async def call(self, x: DataType) -> DataType | None:
+    async def call(self, x: BytesableType) -> BytesableType | None:
         try:
             await self._ensure_initialized()
 
@@ -151,25 +151,22 @@ class RemoteLayer(CallableLayer[DataType, DataType | None]):
                 request = CallRequest(x=x.encode(), type=ProtoDataType.STRING)
             elif isinstance(x, float):
                 request = CallRequest(x=struct.pack("d", x), type=ProtoDataType.FLOAT)
-            elif isinstance(x, int):
+            elif isinstance(x, int):  # type: ignore[redundant-isinstance]
                 request = CallRequest(x=struct.pack("q", x), type=ProtoDataType.INT)
-            elif isinstance(x, bool):
-                request = CallRequest(x=struct.pack("?", x), type=ProtoDataType.BOOL)
             else:
-                logger.error(f"Unsupported frame type: {type(x)}")
+                logger.error(f"Unsupported frame type: {type(x)}")  # type: ignore[unreachable]
                 raise ValueError(f"Unsupported frame type: {type(x)}")
 
-            response: CallResponse = await stub.Call(request)  # type: ignore
+            response: CallResponse | None = await stub.Call(request)  # type: ignore
 
-            if not response.success:  # type: ignore
+            if not response or not response.success:  # type: ignore
                 logger.error(f"Error processing frame on gRPC: {response.error_message}")  # type: ignore
                 return None
 
             # Convert response based on type
             if len(response.y) == 0 or response.y is None:  # type: ignore
                 return None
-
-            if response.type == ProtoDataType.VIDEO_FRAME:  # type: ignore
+            elif response.type == ProtoDataType.VIDEO_FRAME:  # type: ignore
                 return VideoFrame.frombytes(response.y)  # type: ignore
             elif response.type == ProtoDataType.AUDIO_FRAME:  # type: ignore
                 return AudioFrame.frombytes(response.y)  # type: ignore

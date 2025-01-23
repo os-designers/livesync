@@ -23,7 +23,11 @@ async def on_call(ctx: ls.RemoteLayerServicer, x: ls.VideoFrame) -> ls.VideoFram
         frame = x
         adjusted_frame = cv2.convertScaleAbs(frame.data, alpha=_settings["alpha"], beta=_settings["beta"])  # type: ignore
         frame = ls.VideoFrame(
-            data=adjusted_frame, width=frame.width, height=frame.height, buffer_type=frame.buffer_type, pts=frame.pts  # type: ignore
+            data=adjusted_frame,
+            width=frame.width,
+            height=frame.height,
+            buffer_type=frame.buffer_type,
+            pts=frame.pts,  # type: ignore
         )
         return frame
     except Exception as e:

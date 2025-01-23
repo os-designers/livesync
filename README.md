@@ -41,13 +41,14 @@ with sync.compile() as runner:
 
 You can visualize the pipeline by printing y.graph:
 
-```python
+```
 >>> print(y.graph)
-●  (f2): Records processed frames to MP4 file
+
+● (f2): Records processed frames to MP4 file
 │
-●  (f1): Controls frame rate of the stream
+● (f1): Controls frame rate of the stream
 │
-◇  (x): Captures frames from webcam (device 0)
+◇ (x): Captures frames from webcam (device 0)
 ```
 
 ## Features
