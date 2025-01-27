@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v0.3.4 (2025-01-27)
+
+### Bug Fixes
+
+- Change media sync name
+  ([`356d76f`](https://github.com/os-designers/livesync/commit/356d76feafef027273043b9e29f42ce5e5c0f5c6))
+
+### Continuous Integration
+
+- Add step for publising to PyPI
+  ([`0549c04`](https://github.com/os-designers/livesync/commit/0549c04a9e6eb423774d551ee74f03dbcf6e84eb))
+
+
 ## v0.3.3 (2025-01-27)
 
 ### Bug Fixes
