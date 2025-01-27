@@ -29,18 +29,10 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Rye
-        run: |
-          curl -sSf https://rye.astral.sh/get | bash
-          echo "$HOME/.rye/shims" >> $GITHUB_PATH
-        env:
-          RYE_VERSION: '0.35.0'
-          RYE_INSTALL_OPTION: '--yes'
-
       - name: Install dependencies
         run: |
-          rye sync
-          rye install python-semantic-release
+          python -m pip install -U pip
+          pip install python-semantic-release
 
       - name: Configure Git
         run: |
@@ -48,17 +40,8 @@ jobs:
           git config --global user.email "github-actions@github.com"
 
       - name: Release
-        id: release
         env:
           GH_TOKEN: ${{ secrets.PAT }}
         run: |
-          OUTPUT=$(semantic-release version)
-          echo "VERSION_CHANGED=$(echo $OUTPUT | grep -q "No release will be made" && echo "false" || echo "true")" >> "$GITHUB_OUTPUT"
+          semantic-release version
           semantic-release publish
-
-      - name: Publish to PyPI
-        if: steps.release.outputs.VERSION_CHANGED == 'true'
-        run: |
-          bash ./bin/publish-pypi
-        env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
