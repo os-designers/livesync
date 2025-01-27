@@ -19,8 +19,7 @@ x = ls.WebcamInput(name="webcam", device_id=0, fps=30)
 f1 = layers.FpsControl(name="frame_rate", fps=10)
 f2 = layers.VideoRecorder(
     name="video_recorder",
-    filename="./output.mp4",
-    fps=f1.fps
+    filename="./output.mp4"
 )
 
 y = f2(f1(x))

@@ -22,10 +22,7 @@ f2 = layers.MediaSyncLayer(
     buffer_size=1024,
     max_threshold=0.005                           # 5ms sync threshold
 )
-f3 = layers.MediaRecorderLayer(
-    filename="./output.mp4",
-    fps=30
-)
+f3 = layers.MediaRecorderLayer(filename="./output.mp4")
 
 # Build pipeline
 h = f1(x2)                                        # Delayed audio
