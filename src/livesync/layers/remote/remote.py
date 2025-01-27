@@ -121,7 +121,7 @@ class RemoteLayer(CallableLayer[BytesableType, BytesableType | None]):
             responses: list[InitResponse] = await asyncio.gather(
                 *[stub.Init(request) for stub in self._stubs.values()]  # type: ignore[func-returns-value]
             )
-            for endpoint, response in zip(self._stubs.keys(), responses):
+            for endpoint, response in zip(self._stubs.keys(), responses, strict=False):
                 if not response.success:
                     logger.error(f"Failed to initialize {endpoint}: {response.error_message}")
                 else:

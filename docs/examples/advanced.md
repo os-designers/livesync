@@ -18,7 +18,7 @@ x2 = ls.MicrophoneInput(sample_rate=44100, chunk_size=1024)
 
 # Create processing layers
 f1 = layers.DelayLayer(interval=1.0)              # Add 1s delay to audio
-f2 = layers.MediaSyncLayer(
+f2 = layers.MediaSynchronizerLayer(
     buffer_size=1024,
     max_threshold=0.005                           # 5ms sync threshold
 )
@@ -62,7 +62,7 @@ This pipeline:
 ### Key Concepts
 
 - **Stream Merging**: The `how="outer"` parameter in `Merge` means the layer processes whenever either input stream has data
-- **Media Sync**: `MediaSyncLayer` ensures audio and video stay synchronized within the specified threshold
+- **Media Sync**: `MediaSynchronizerLayer` ensures audio and video stay synchronized within the specified threshold
 - **Delay Control**: `DelayLayer` can adjust timing relationships between streams
 
 ## Running the Example

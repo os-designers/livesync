@@ -1,6 +1,6 @@
 [project]
 name = "livesync-io"
-version = "0.3.1"
+version = "0.3.3"
 description = "The graph-based video processing framework"
 license = { text = "MIT" }
 authors = [
@@ -170,7 +170,7 @@ reportPrivateUsage = false
 [tool.ruff]
 line-length = 120
 output-format = "grouped"
-target-version = "py37"
+target-version = "py312"
 
 [tool.ruff.format]
 docstring-code-format = true
@@ -225,17 +225,15 @@ known-first-party = ["livesync", "tests"]
 "src/livesync/callbacks/callbacks.py" = ["T201"]
 
 [tool.semantic_release]
-version_variable = [
-    "src/livesync/__version__.py:__version__",
-    "pyproject.toml:version",
-]
+version_variable = ["src/livesync/__init__.py:__version__"]
+version_toml = ["pyproject.toml:project.version"]
 branch = "main"
 changelog_file = "CHANGELOG.md"
 build_command = "rye build"
 dist_path = "dist/"
 upload_to_pypi = false
 upload_to_release = true
-commit_message = "chore(release): {version} [skip ci]"
+commit_message = "chore(release): {version}"
 
 [tool.semantic_release.commit_parser_options]
 allowed_tags = [

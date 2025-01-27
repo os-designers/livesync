@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-from .__version__ import __title__, __version__
 from ._utils.logs import SensitiveHeadersFilter, setup_logging as _setup_logging
 
 __all__ = [
-    "__title__",
     "__version__",
     "CallbackProtocol",
     "SensitiveHeadersFilter",
@@ -38,3 +36,5 @@ from .layers.audio.microphone import MicrophoneInput
 from .layers.numeric.periodic_constant import PeriodicConstantInput
 
 _setup_logging()
+
+__version__ = "0.3.3"

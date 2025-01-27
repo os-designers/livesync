@@ -23,7 +23,7 @@ if __name__ == "__main__":
     x2 = ls.MicrophoneInput(sample_rate=44100, chunk_size=1024)
 
     f1 = layers.DelayLayer(interval=0.5)
-    f2 = layers.MediaSyncLayer(buffer_size=1024, max_threshold=0.005)  # 5ms
+    f2 = layers.MediaSynchronizerLayer(buffer_size=1024, max_threshold=0.005)  # 5ms
     f3 = layers.MediaRecorderLayer(filename="./examples/output.mp4")
 
     h = f1(x2)
