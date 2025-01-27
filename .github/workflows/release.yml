@@ -24,15 +24,23 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.PAT }}
 
-      - name: Python Setup
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
+      - name: Install system dependencies
         run: |
-          python -m pip install -U pip
-          pip install python-semantic-release
+          sudo apt-get update
+          sudo apt-get install -y portaudio19-dev
+
+      - name: Install Rye
+        run: |
+          curl -sSf https://rye.astral.sh/get | bash
+          echo "$HOME/.rye/shims" >> $GITHUB_PATH
+        env:
+          RYE_VERSION: '0.35.0'
+          RYE_INSTALL_OPTION: '--yes'
+
+      - name: Install semantic release
+        run: |
+          rye sync
+          rye install python-semantic-release
 
       - name: Configure Git
         run: |
