@@ -126,7 +126,7 @@ class RemoteLayer(CallableLayer[BytesableType, BytesableType | None]):
                     logger.error(f"Failed to initialize {endpoint}: {response.error_message}")
                 else:
                     logger.info(f"Initialized {endpoint} successfully")
-
+            self._initialized = True
         except grpc.RpcError as e:
             raise e
 
@@ -202,6 +202,7 @@ class RemoteLayer(CallableLayer[BytesableType, BytesableType | None]):
             disconnect_tasks = [close_connection(endpoint) for endpoint in self._stubs.keys()]
             await asyncio.gather(*disconnect_tasks, return_exceptions=True)
             self._stubs.clear()
+            self._initialized = False
 
     @property
     def endpoint(self) -> str | list[str]:

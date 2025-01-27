@@ -52,13 +52,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT }}
         run: |
-          OUTPUT=$(semantic-release version)
-          echo "version_changed=$(echo $OUTPUT | grep -q "No release will be made" && echo "false" || echo "true")" >> $GITHUB_ENV
+          semantic-release version
           semantic-release publish
 
       - name: Publish to PyPI
-        if: ${{ steps.release.outputs.version_changed == 'true' }}
-        run: |
-          bash ./bin/publish-pypi
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          bash ./bin/publish-pypi
