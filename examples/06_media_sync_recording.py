@@ -12,19 +12,19 @@ if __name__ == "__main__":
     # │
     # ○──●  (wait for any stream)
     # │  │
-    # │  ●  (f1): Delays audio frames by 1 second
+    # │  ●  (f1): Delays audio frames by 2 second
     # │  │
     # │  ◇  (x2): Captures audio frames from microphone
     # │
     # ◇  (x1): Captures frames from webcam
     #
 
-    x1 = ls.WebcamInput(device_id=1, fps=30)
+    x1 = ls.WebcamInput(device_id=0, fps=30)
     x2 = ls.MicrophoneInput(sample_rate=44100, chunk_size=1024)
 
-    f1 = layers.DelayLayer(interval=1.0)
+    f1 = layers.DelayLayer(interval=0.5)
     f2 = layers.MediaSyncLayer(buffer_size=1024, max_threshold=0.005)  # 5ms
-    f3 = layers.MediaRecorderLayer(filename="./examples/output.mp4", fps=30)
+    f3 = layers.MediaRecorderLayer(filename="./examples/output.mp4")
 
     h = f1(x2)
     u = layers.Merge([x1, h], how="outer")
@@ -33,4 +33,4 @@ if __name__ == "__main__":
 
     sync = ls.Sync(inputs=[x1, x2], outputs=[y])
     with sync.compile() as runner:
-        runner.run(callback=ls.LoggingCallback())
+        runner.run(callback=ls.StreamMonitoringCallback())

@@ -5,12 +5,12 @@ import tempfile
 import subprocess
 from logging import getLogger
 
-import cv2
-import pyaudio  # type: ignore
+import av
+import numpy as np
+import av.container
 
 from ...types import MediaFrameType
 from ..._utils.logs import logger
-from ..._utils.codec import get_video_codec
 from ...frames.video_frame import VideoFrame
 from ..core.callable_layer import CallableLayer
 
@@ -24,20 +24,20 @@ class MediaRecorderLayer(CallableLayer[MediaFrameType | dict[str, MediaFrameType
     ----------
     filename : str
         Path to the output media file
-    fps : float
-        Frames per second for the output video
+    codec : str, default="h264"
+        Codec to use for the output video
     """
 
-    def __init__(self, filename: str, fps: float, name: str | None = None) -> None:
+    def __init__(self, filename: str, codec: str = "h264", name: str | None = None) -> None:
         super().__init__(name=name)
         self.filename = filename
-        self.fps = fps
+        self.codec = codec
 
         self._temp_video = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
         self._temp_audio = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
-        self._codec = get_video_codec(self.filename)
-        self._video_writer = None
-        self._audio_writer = None
+        self._video_container: av.container.OutputContainer | None = None
+        self._video_stream: av.VideoStream | None = None
+        self._audio_writer: wave.Wave_write | None = None
         self._lock = asyncio.Lock()
 
     async def call(self, x: MediaFrameType | dict[str, MediaFrameType]) -> None:
@@ -53,24 +53,32 @@ class MediaRecorderLayer(CallableLayer[MediaFrameType | dict[str, MediaFrameType
 
                 if isinstance(frame, VideoFrame):
                     # Initialize video writer if not already done
-                    if self._video_writer is None:
-                        self._video_writer = cv2.VideoWriter(  # type: ignore
-                            self._temp_video.name, self._codec, self.fps, (frame.width, frame.height)
-                        )
+                    if self._video_container is None:
+                        self._video_container = av.open(self._temp_video.name, mode="w")
+                        self._video_stream = self._video_container.add_stream(self.codec)  # type: ignore
+                        self._video_stream.width = frame.width  # type: ignore
+                        self._video_stream.height = frame.height  # type: ignore
+                        self._video_stream.pix_fmt = "yuv420p"  # type: ignore
 
                     # Write video frame
-                    bgr_frame_data = cv2.cvtColor(frame.data, cv2.COLOR_RGB2BGR)  # type: ignore
-                    self._video_writer.write(bgr_frame_data)  # type: ignore
+                    av_frame = av.VideoFrame.from_ndarray(frame.data, format=frame.buffer_type)  # type: ignore
+                    av_frame.pts = frame.pts
+                    packet = self._video_stream.encode(av_frame)  # type: ignore
+                    self._video_container.mux(packet)  # type: ignore
+
                 else:
                     # Initialize audio writer if not already done
                     if self._audio_writer is None:
                         self._audio_writer = wave.open(self._temp_audio.name, "wb")  # type: ignore
-                        self._audio_writer.setnchannels(frame.num_channels)  # type: ignore[attr-defined]
-                        self._audio_writer.setsampwidth(pyaudio.get_sample_size(pyaudio.paFloat32))  # type: ignore[attr-defined]
-                        self._audio_writer.setframerate(frame.sample_rate)  # type: ignore[attr-defined]
+                        self._audio_writer.setnchannels(frame.num_channels)
+                        self._audio_writer.setsampwidth(frame.sample_width)
+                        self._audio_writer.setframerate(frame.sample_rate)
+
+                    # Convert data to appropriate format for WAV file
+                    data = frame.data.astype(np.int16)
 
                     # Write audio frame
-                    self._audio_writer.writeframes(frame.data.tobytes())  # type: ignore
+                    self._audio_writer.writeframes(data.tobytes())
 
         except Exception as e:
             logger.error(f"Error in MediaRecorderNode process: {e}")
@@ -80,9 +88,11 @@ class MediaRecorderLayer(CallableLayer[MediaFrameType | dict[str, MediaFrameType
         """Finalizes the recording and merges video and audio."""
         async with self._lock:
             # Close video writer
-            if self._video_writer is not None:
-                self._video_writer.release()  # type: ignore[unreachable]
-                self._video_writer = None
+            if self._video_container is not None and self._video_stream is not None:
+                self._video_container.mux(self._video_stream.encode())
+                self._video_container.close()
+                self._video_container = None
+                self._video_stream = None
 
             # Close audio writer
             if self._audio_writer is not None:

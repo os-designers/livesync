@@ -13,7 +13,6 @@ from .media.media_recorder import MediaRecorderLayer
 from .video.video_recorder import VideoRecorderLayer
 from .video.resolution_control import ResolutionControlLayer
 from .numeric.periodic_constant import PeriodicConstantInput
-from .media.media_stream_recorder import MediaStreamRecorderLayer
 from .remote.server.remote_layer_server import RemoteLayerServer
 
 __all__ = [
@@ -28,7 +27,6 @@ __all__ = [
     "AudioRecorderLayer",
     "MediaSyncLayer",
     "MediaRecorderLayer",
-    "MediaStreamRecorderLayer",
     "Multiply",
     "Merge",
     "DelayLayer",

@@ -68,7 +68,7 @@ class RemoteLayerServicer(_RemoteLayerServicer):
                 await self._on_init(self, **settings)
             self._initialized = True
 
-            logger.debug(f"Initialized successfully with settings: {settings}")
+            logger.info(f"Initialized successfully with settings: {settings}")
             return InitResponse(success=True)
 
         except Exception as e:

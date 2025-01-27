@@ -115,7 +115,6 @@ include = [
   "/*.lock",
   "/*.md",
   "/mypy.ini",
-  "/noxfile.py",
   "bin/*",
   "examples/*",
   "src/*",
@@ -160,7 +159,6 @@ pythonVersion = "3.10"
 exclude = [
     "_dev",
     ".venv",
-    ".nox",
     "examples/**",
     "src/livesync/_protos/**",
 ]

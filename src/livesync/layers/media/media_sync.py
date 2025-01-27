@@ -12,6 +12,8 @@ from ..core.callable_layer import CallableLayer
 logger = getLogger(__name__)
 
 
+# Reference:
+# https://github.com/livekit/python-sdks/blob/main/livekit-rtc/livekit/rtc/synchronizer.py#L16
 class MediaSyncLayer(CallableLayer[dict[str, MediaFrameType], MediaFrameType | None]):
     """A layer that synchronizes video and audio frames.
     Always outputs the input frame, but adjusts timestamps if needed to maintain sync.

@@ -19,10 +19,10 @@ if __name__ == "__main__":
     x2 = ls.MicrophoneInput(sample_rate=44100, chunk_size=1024)
 
     u = layers.Merge([x1, x2], how="outer")
-    f = layers.MediaRecorderLayer(filename="./examples/output.mp4", fps=30)
+    f = layers.MediaRecorderLayer(filename="./examples/output.mp4")
 
     y = f(u)
 
     sync = ls.Sync(inputs=[x1, x2], outputs=[u])
     with sync.compile() as runner:
-        runner.run(callback=ls.StreamMonitoringCallback())
+        runner.run(callback=None)  # ls.StreamMonitoringCallback())

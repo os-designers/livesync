@@ -9,6 +9,13 @@ from numpy.typing import NDArray
 
 from .base_frame import BaseFrame
 
+SAMPLE_WIDTH_MAP = {
+    "float32": 4,
+    "int16": 2,
+    "int32": 4,
+    "uint8": 1,
+}
+
 
 class AudioFrame(BaseFrame):
     """Audio frame representation supporting various sample formats and channel layouts.
@@ -160,6 +167,10 @@ class AudioFrame(BaseFrame):
             time_base=time_base,
             channel_layout=channel_layout,
         )
+
+    @property
+    def sample_width(self) -> int:
+        return SAMPLE_WIDTH_MAP[self.sample_format]
 
     def __repr__(self) -> str:
         return (

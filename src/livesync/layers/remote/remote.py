@@ -122,11 +122,10 @@ class RemoteLayer(CallableLayer[BytesableType, BytesableType | None]):
                 *[stub.Init(request) for stub in self._stubs.values()]  # type: ignore[func-returns-value]
             )
             for endpoint, response in zip(self._stubs.keys(), responses):
-                logger.info(
-                    f"Init response for {endpoint}: "
-                    f"  success = {response.success} "
-                    f"  error_message = {response.error_message}"
-                )
+                if not response.success:
+                    logger.error(f"Failed to initialize {endpoint}: {response.error_message}")
+                else:
+                    logger.info(f"Initialized {endpoint} successfully")
 
         except grpc.RpcError as e:
             raise e

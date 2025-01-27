@@ -14,7 +14,7 @@ if __name__ == "__main__":
     x = ls.WebcamInput(device_id=0, fps=30)
 
     f1 = layers.FpsControlLayer(fps=10)
-    f2 = layers.VideoRecorderLayer(filename="./examples/output.mp4", fps=f1.fps)
+    f2 = layers.VideoRecorderLayer(filename="./examples/output.mp4")
 
     h = f1(x)
     y = f2(h)

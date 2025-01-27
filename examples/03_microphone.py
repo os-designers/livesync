@@ -12,7 +12,7 @@ if __name__ == "__main__":
     x = ls.MicrophoneInput(name="microphone", sample_rate=44100, chunk_size=1024)
     f = layers.AudioRecorderLayer(
         name="audio_recorder",
-        filename="./examples/output.mp4",
+        filename="./examples/output.wav",
     )
 
     y = f(x)

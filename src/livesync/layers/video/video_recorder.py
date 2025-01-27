@@ -1,9 +1,9 @@
 import asyncio
 
-import cv2
+import av
+import av.container
 
 from ..._utils.logs import logger
-from ..._utils.codec import get_video_codec
 from ...frames.video_frame import VideoFrame
 from ..core.callable_layer import CallableLayer
 
@@ -11,32 +11,39 @@ from ..core.callable_layer import CallableLayer
 class VideoRecorderLayer(CallableLayer[VideoFrame, None]):
     """A layer that records video frames to a file."""
 
-    def __init__(self, filename: str, fps: float = 30.0, name: str | None = None) -> None:
+    def __init__(self, filename: str, codec: str = "h264", name: str | None = None) -> None:
         super().__init__(name=name)
-        self.fps = fps
         self.filename = filename
+        self.codec = codec
 
-        self._codec = get_video_codec(self.filename)
-        self._writer: cv2.VideoWriter | None = None
-        self._recording: bool = False
+        self._container: av.container.OutputContainer | None = None
+        self._stream: av.VideoStream | None = None
         self._lock = asyncio.Lock()
+        self._first_pts: float | None = None
 
     async def call(self, x: VideoFrame) -> None:
-        """Records video frames to a file."""
+        """Records video frames to a file using `av`."""
         try:
             async with self._lock:
-                if self._writer is None:
-                    self._writer = cv2.VideoWriter(self.filename, self._codec, self.fps, (x.width, x.height))
+                if self._container is None:
+                    self._container = av.open(self.filename, mode="w")
+                    self._stream = self._container.add_stream(self.codec)  # type: ignore
+                    self._stream.width = x.width  # type: ignore
+                    self._stream.height = x.height  # type: ignore
+                    self._stream.pix_fmt = "yuv420p"  # type: ignore
 
-                bgr_frame_data = cv2.cvtColor(x.data, cv2.COLOR_RGB2BGR)  # type: ignore
-                self._writer.write(bgr_frame_data)  # type: ignore
+                frame = av.VideoFrame.from_ndarray(x.data, format=x.buffer_type)  # type: ignore
+                frame.pts = x.pts
+                packet = self._stream.encode(frame)  # type: ignore
+                self._container.mux(packet)
         except Exception as e:
             logger.error(f"Error recording video frame: {e}")
 
     async def cleanup(self) -> None:
         """Finalizes the file writing process."""
-        self._recording = False
         async with self._lock:
-            if self._writer is not None:
-                self._writer.release()
-                self._writer = None
+            if self._stream is not None and self._container is not None:
+                self._container.mux(self._stream.encode())
+                self._container.close()
+                self._container = None
+                self._stream = None

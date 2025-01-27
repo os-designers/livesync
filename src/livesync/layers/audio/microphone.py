@@ -35,7 +35,7 @@ class MicrophoneInput(InputLayer[AudioFrame]):
         sample_rate: int = 44100,
         channels: int | None = None,
         chunk_size: int = 1024,
-        sample_format: str = "float32",
+        sample_format: str = "int16",
         name: str | None = None,
     ):
         """Initializes the audio capture."""
@@ -68,8 +68,15 @@ class MicrophoneInput(InputLayer[AudioFrame]):
         # Set channel layout based on number of channels
         self._channel_layout = "mono" if self.channels == 1 else "stereo"
 
+        format_map = {
+            "float32": pyaudio.paFloat32,
+            "int16": pyaudio.paInt16,
+            "int32": pyaudio.paInt32,
+            "uint8": pyaudio.paUInt8,
+        }
+
         self._stream = self._audio.open(
-            format=pyaudio.paFloat32,
+            format=format_map[self.sample_format],
             channels=self.channels,
             rate=self.sample_rate,
             input=True,
@@ -108,7 +115,14 @@ class MicrophoneInput(InputLayer[AudioFrame]):
 
                 pts = int((current_time - start_time) / self._time_base)
 
-                audio_data = np.frombuffer(data, dtype=np.float32).reshape(-1, self.channels)
+                dtype_map = {
+                    "float32": np.float32,
+                    "int16": np.int16,
+                    "int32": np.int32,
+                    "uint8": np.uint8,
+                }
+
+                audio_data = np.frombuffer(data, dtype=dtype_map[self.sample_format]).reshape(-1, self.channels)
                 audio_frame = AudioFrame(
                     data=audio_data,
                     sample_rate=self.sample_rate,
@@ -116,7 +130,7 @@ class MicrophoneInput(InputLayer[AudioFrame]):
                     sample_format=self.sample_format,
                     channel_layout=self._channel_layout,
                     pts=pts,
-                    time_base=Fraction(1, self.sample_rate),
+                    time_base=self._time_base,
                 )
                 yield audio_frame
                 await asyncio.sleep(0)

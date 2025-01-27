@@ -4,7 +4,6 @@ import asyncio
 from typing import Any, Literal, Callable, Sequence, Awaitable, AsyncIterator
 from collections import deque
 
-from .._utils.logs import logger
 from .._utils.naming import generate_name
 from .._utils.graph_visualizer import GraphVisualizer
 
@@ -68,19 +67,18 @@ class Stream:
             for dep in dependencies:
                 self._pending_values[dep.name] = deque()
 
-    async def push(self, value: Any, source: Stream | None = None) -> None:
+    async def push(self, value: Any | None, source: Stream | None = None) -> None:
         """
         Processes and queues a new value from an upstream dependency.
 
         Parameters
         ----------
-        value : Any
+        value : Any | None
             The value to be processed.
-        source : Stream, optional
+        source : Stream | None, optional
             The upstream stream that produced this value.
         """
         if value is None:
-            logger.warning(f"Stream {self.name} received a None value")
             return
 
         if self._operator:
