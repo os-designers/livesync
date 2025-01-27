@@ -11,8 +11,8 @@ from .video.fps_control import FpsControlLayer
 from .audio.audio_recorder import AudioRecorderLayer
 from .media.media_recorder import MediaRecorderLayer
 from .video.video_recorder import VideoRecorderLayer
-from .video.video_quality_control import VideoQualityControlLayer
 from .numeric.periodic_constant import PeriodicConstantInput
+from .video.video_quality_control import VideoQualityControlLayer
 from .remote.server.remote_layer_server import RemoteLayerServer
 
 __all__ = [
