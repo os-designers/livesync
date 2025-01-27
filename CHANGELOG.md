@@ -1,6 +1,29 @@
 # CHANGELOG
 
 
+## v0.3.3 (2025-01-27)
+
+### Bug Fixes
+
+- Replace resolution control with video quality control
+  ([`ec1be84`](https://github.com/os-designers/livesync/commit/ec1be84ebcf9ccd76014b469a25fc66c9ed9ae69))
+
+### Chores
+
+- Apply fix:ruff
+  ([`afc285d`](https://github.com/os-designers/livesync/commit/afc285d3f92695745a4bd926b403ecb5db450996))
+
+### Refactoring
+
+- Replace resolution control with video quality control
+  ([`ab88f60`](https://github.com/os-designers/livesync/commit/ab88f60d37f18fefbed1b9a9d5be5b6e7fb674ec))
+
+- Update dashboard example to use video quality settings instead of fixed resolution - Rename
+  ResolutionControlLayer to VideoQualityControlLayer - Modify UI to support broader range of quality
+  presets - Update workflow and app to use new quality parameter - Remove deprecated
+  resolution_control.py file
+
+
 ## v0.3.2 (2025-01-27)
 
 ### Bug Fixes
