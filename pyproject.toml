@@ -222,3 +222,32 @@ known-first-party = ["livesync", "tests"]
 "src/livesync/_protos/**.py" = ["ARG002", "I001", "F401"]
 "src/livesync/_protos/**.pyi" = ["I001", "TC004"]
 "src/livesync/callbacks/callbacks.py" = ["T201"]
+
+[tool.semantic_release]
+version_variable = [
+    "src/livesync/__version__.py:__version__",
+    "pyproject.toml:version",
+]
+branch = "main"
+changelog_file = "CHANGELOG.md"
+build_command = "rye build"
+dist_path = "dist/"
+upload_to_pypi = false
+upload_to_release = true
+commit_message = "chore(release): {version} [skip ci]"
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = [
+    "build",
+    "chore",
+    "ci",
+    "docs",
+    "feat",
+    "fix",
+    "perf",
+    "style",
+    "refactor",
+    "test",
+]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf"]

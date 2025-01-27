@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from .version import __title__, __version__
+from .__version__ import __title__, __version__
 from ._utils.logs import SensitiveHeadersFilter, setup_logging as _setup_logging
 
 __all__ = [
