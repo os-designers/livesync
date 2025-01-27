@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.3.5 (2025-01-27)
+
+### Bug Fixes
+
+- Improved initialization process to avoid repeated calls during frame processing in remote layer
+  ([`d89d7ee`](https://github.com/os-designers/livesync/commit/d89d7eedc6581481b5d36311e39922d4ca39f677))
+
+
 ## v0.3.4 (2025-01-27)
 
 ### Bug Fixes
