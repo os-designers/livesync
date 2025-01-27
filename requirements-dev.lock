@@ -11,6 +11,8 @@
 
 -e file:.
 -e file:examples/dashboard
+annotated-types==0.7.0
+    # via pydantic
 anyio==4.8.0
     # via httpx
 av==14.0.1
@@ -24,17 +26,27 @@ certifi==2024.12.14
 charset-normalizer==3.4.1
     # via requests
 click==8.1.8
+    # via click-option-group
     # via mkdocs
     # via mkdocstrings
+    # via python-semantic-release
+click-option-group==0.5.6
+    # via python-semantic-release
 colorama==0.4.6
     # via griffe
     # via mkdocs-material
+dotty-dict==1.3.1
+    # via python-semantic-release
 ffmpeg-python==0.2.0
     # via livesync-io
 future==1.0.0
     # via ffmpeg-python
 ghp-import==2.1.0
     # via mkdocs
+gitdb==4.0.12
+    # via gitpython
+gitpython==3.1.44
+    # via python-semantic-release
 griffe==1.5.5
     # via mkdocstrings-python
 grpcio==1.69.0
@@ -52,12 +64,15 @@ idna==3.10
     # via httpx
     # via requests
 importlib-metadata==8.5.0
+importlib-resources==6.5.2
+    # via python-semantic-release
 iniconfig==2.0.0
     # via pytest
 jinja2==3.1.5
     # via mkdocs
     # via mkdocs-material
     # via mkdocstrings
+    # via python-semantic-release
 markdown==3.7
     # via mkdocs
     # via mkdocs-autorefs
@@ -122,6 +137,10 @@ protobuf==5.29.3
     # via mypy-protobuf
 pyaudio==0.2.14
     # via livesync-io
+pydantic==2.10.6
+    # via python-semantic-release
+pydantic-core==2.27.2
+    # via pydantic
 pygments==2.19.1
     # via mkdocs-material
     # via rich
@@ -148,6 +167,9 @@ pytest==8.3.4
 pytest-asyncio==0.25.2
 python-dateutil==2.9.0.post0
     # via ghp-import
+python-gitlab==4.13.0
+    # via python-semantic-release
+python-semantic-release==9.17.0
 pyyaml==6.0.2
     # via mkdocs
     # via mkdocs-get-deps
@@ -161,20 +183,34 @@ regex==2024.11.6
     # via mkdocs-material
 requests==2.32.3
     # via mkdocs-material
+    # via python-gitlab
+    # via python-semantic-release
+    # via requests-toolbelt
+requests-toolbelt==1.0.0
+    # via python-gitlab
 rich==13.9.4
+    # via python-semantic-release
 ruff==0.8.6
 setuptools==75.8.0
     # via grpcio-tools
+shellingham==1.5.4
+    # via python-semantic-release
 six==1.17.0
     # via python-dateutil
+smmap==5.0.2
+    # via gitdb
 sniffio==1.3.1
     # via anyio
+tomlkit==0.13.2
+    # via python-semantic-release
 types-protobuf==4.25.0.20240417
     # via mypy-protobuf
 typing-extensions==4.12.2
     # via anyio
     # via livesync-io
     # via mypy
+    # via pydantic
+    # via pydantic-core
     # via pyright
 urllib3==2.3.0
     # via requests
