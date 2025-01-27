@@ -714,7 +714,7 @@
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Create processing layers</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">f1</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">DelayLayer</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>              <span class="c1"># Add 1s delay to audio</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">f2</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">MediaSyncLayer</span><span class="p">(</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">f2</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">MediaSynchronizerLayer</span><span class="p">(</span>
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">buffer_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">max_threshold</span><span class="o">=</span><span class="mf">0.005</span>                           <span class="c1"># 5ms sync threshold</span>
 <a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="p">)</span>
@@ -755,7 +755,7 @@
 <h3 id="key-concepts">Key Concepts</h3>
 <ul>
 <li><strong>Stream Merging</strong>: The <code>how="outer"</code> parameter in <code>Merge</code> means the layer processes whenever either input stream has data</li>
-<li><strong>Media Sync</strong>: <code>MediaSyncLayer</code> ensures audio and video stay synchronized within the specified threshold</li>
+<li><strong>Media Sync</strong>: <code>MediaSynchronizerLayer</code> ensures audio and video stay synchronized within the specified threshold</li>
 <li><strong>Delay Control</strong>: <code>DelayLayer</code> can adjust timing relationships between streams</li>
 </ul>
 <h2 id="running-the-example">Running the Example</h2>
