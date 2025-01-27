@@ -22,7 +22,7 @@ class WorkflowManager:
         self,
         window: MainWindow,
         webcam_device_id: int = 0,
-        target_resolution: int = 360,
+        quality: str = "HD",
         target_fps: int = 20,
     ) -> ls.Run:
         global _window
@@ -45,7 +45,7 @@ class WorkflowManager:
         #     endpoints=["localhost:50051"],
         # )
 
-        f2 = layers.ResolutionControlLayer(target_height=target_resolution)
+        f2 = layers.VideoQualityControlLayer(quality=quality)
 
         async def update_frame(x: ls.VideoFrame) -> None:
             global workflow_manager

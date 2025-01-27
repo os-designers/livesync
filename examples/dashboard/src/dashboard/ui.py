@@ -20,7 +20,7 @@ from PyQt6.QtWidgets import (
 @dataclass
 class StreamSettings:
     webcam_device_id: int
-    target_resolution: int
+    quality: str
     target_fps: int
 
 
@@ -74,15 +74,15 @@ class MainWindow(QMainWindow):
         camera_layout.addWidget(self.camera_combo)
         device_layout.addLayout(camera_layout)
 
-        # Resolution settings
-        res_layout = QHBoxLayout()
-        res_label = QLabel("Resolution:")
-        self.res_combo = QComboBox()
-        self.res_combo.addItems(["240p", "360p", "480p", "720p", "1080p"])  # type: ignore
-        self.res_combo.setCurrentText("360p")
-        res_layout.addWidget(res_label)
-        res_layout.addWidget(self.res_combo)
-        device_layout.addLayout(res_layout)
+        # Quality settings
+        quality_layout = QHBoxLayout()
+        quality_label = QLabel("Quality:")
+        self.quality_combo = QComboBox()
+        self.quality_combo.addItems(["144p", "240p", "360p", "480p", "SD", "HD", "FHD", "2K", "4K"])  # type: ignore
+        self.quality_combo.setCurrentText("HD")
+        quality_layout.addWidget(quality_label)
+        quality_layout.addWidget(self.quality_combo)
+        device_layout.addLayout(quality_layout)
 
         # Target FPS settings
         target_fps_layout = QHBoxLayout()
@@ -116,10 +116,9 @@ class MainWindow(QMainWindow):
         self.camera_combo.addItems(camera_list)  # type: ignore
 
     def _on_settings_changed(self):
-        res_map = {"240p": 240, "360p": 360, "480p": 480, "720p": 720, "1080p": 1080}
         settings = StreamSettings(
             webcam_device_id=self.camera_combo.currentIndex(),
-            target_resolution=res_map[self.res_combo.currentText()],
+            quality=self.quality_combo.currentText(),
             target_fps=self.target_fps_spin.value(),
         )
         self.settings_changed.emit(settings)

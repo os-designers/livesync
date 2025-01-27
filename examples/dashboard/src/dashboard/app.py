@@ -26,7 +26,7 @@ class Application:
         await workflow_manager.start_workflow(
             window=self.window,
             webcam_device_id=settings.webcam_device_id,
-            target_resolution=settings.target_resolution,
+            quality=settings.quality,
             target_fps=settings.target_fps,
         )
 
