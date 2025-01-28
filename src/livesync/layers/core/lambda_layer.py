@@ -59,7 +59,7 @@ class Lambda(Layer):
             name=name or self.name,
             dependencies=[x],
             operator=self._function,
-            cleanup=self.cleanup,
+            layer=self,
         )
         return new_stream
 

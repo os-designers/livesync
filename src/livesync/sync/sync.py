@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Sequence
 
+from ..layers.layer import Layer
 from ..streams.stream import Stream
 from .._utils.graph_visualizer import GraphVisualizer
 
@@ -105,6 +106,10 @@ class Sync:
         for input_stream in self._inputs:
             collect_streams(input_stream)
         return all_streams
+
+    def get_all_layers(self) -> set[Layer]:
+        """Get all layers in the graph."""
+        return {stream._layer for stream in self.get_all_streams() if stream._layer is not None}
 
     def _is_reachable(self, start: Stream, target: Stream) -> bool:
         """Check if target stream is reachable from start stream using BFS."""

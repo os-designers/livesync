@@ -73,7 +73,7 @@ class Merge(Layer):
             name=name or obj.name,
             dependencies=inputs,
             dependency_strategy="all" if obj.how == "inner" else "any",
-            cleanup=obj.cleanup,
+            layer=obj,
         )
 
         return new_stream
