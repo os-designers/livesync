@@ -61,14 +61,10 @@ class RemoteLayerServicer(_RemoteLayerServicer):
             Response indicating success or failure of configuration.
         """
         try:
-            logger.info("Initializing layer...")
             settings = MessageToDict(request.settings)
-
             if self._on_init:
                 await self._on_init(self, **settings)
             self._initialized = True
-
-            logger.info(f"Initialized successfully with settings: {settings}")
             return InitResponse(success=True)
 
         except Exception as e:
