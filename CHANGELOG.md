@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.3.6 (2025-01-28)
+
+### Bug Fixes
+
+- Remove initialization logging in remote layer
+  ([`80d35e3`](https://github.com/os-designers/livesync/commit/80d35e3cd2bf94b8cc2ffc555d0120f9a4866c66))
+
+
 ## v0.3.5 (2025-01-27)
 
 ### Bug Fixes
