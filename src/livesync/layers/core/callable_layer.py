@@ -60,6 +60,6 @@ class CallableLayer(Layer, Generic[T, U]):
             name=name or self.name,
             dependencies=[x],
             operator=self.call,
-            cleanup=self.cleanup,
+            layer=self,
         )
         return new_stream

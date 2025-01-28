@@ -95,6 +95,10 @@ class Runner:
         if self._running:
             raise RuntimeError("Runner is already running.")
 
+        unique_layers = self._sync.get_all_layers()
+        for layer in unique_layers:
+            await layer.init()
+
         self._running = True
         self._callback = callback
 
@@ -224,8 +228,8 @@ class Runner:
         """Asynchronous cleanup implementation."""
         try:
             # Cleanup all layers
-            unique_streams = self._sync.get_all_streams()
-            await asyncio.gather(*(stream.cleanup() for stream in unique_streams))
+            unique_layers = self._sync.get_all_layers()
+            await asyncio.gather(*(layer.cleanup() for layer in unique_layers))
 
             # Cancel all tasks
             for t in self._tasks:

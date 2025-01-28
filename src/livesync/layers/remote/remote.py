@@ -74,43 +74,42 @@ class RemoteLayer(CallableLayer[BytesableType, BytesableType | None]):
         self._lock = asyncio.Lock()
         self._initialized = False
 
-    async def _ensure_initialized(self) -> None:
+    async def init(self) -> None:
         """Ensures the remote layer is initialized."""
-        if not self._initialized:
-            try:
-                logger.debug(f"Connecting to {len(self._endpoints)} endpoints")
+        try:
+            logger.debug(f"Connecting to {len(self._endpoints)} endpoints")
 
-                async def establish_connection(endpoint: str) -> None:
-                    """Establishes connection to a single endpoint with authentication"""
-                    try:
-                        channel = grpc.aio.insecure_channel(endpoint, options=_GRPC_OPTIONS)
-                        await channel.channel_ready()
+            async def establish_connection(endpoint: str) -> None:
+                """Establishes connection to a single endpoint with authentication"""
+                try:
+                    channel = grpc.aio.insecure_channel(endpoint, options=_GRPC_OPTIONS)
+                    await channel.channel_ready()
 
-                        stub = RemoteLayerStub(channel)  # type: ignore[no-untyped-call]
-                        async with self._lock:
-                            self._stubs[endpoint] = stub
-                            logger.info(f"Successfully connected endpoint: {endpoint}")
+                    stub = RemoteLayerStub(channel)  # type: ignore[no-untyped-call]
+                    async with self._lock:
+                        self._stubs[endpoint] = stub
+                        logger.info(f"Successfully connected endpoint: {endpoint}")
 
-                    except Exception as e:
-                        logger.error(f"Failed to connect to {endpoint}: {e}")
-                        raise grpc.RpcError(f"Connection failed to {endpoint}: {str(e)}") from e
+                except Exception as e:
+                    logger.error(f"Failed to connect to {endpoint}: {e}")
+                    raise grpc.RpcError(f"Connection failed to {endpoint}: {str(e)}") from e
 
-                # Establish connections to all endpoints
-                connection_tasks = [establish_connection(endpoint) for endpoint in self._endpoints]
-                results = await asyncio.gather(*connection_tasks, return_exceptions=True)
-                successful_connections = sum(1 for r in results if not isinstance(r, Exception))
+            # Establish connections to all endpoints
+            connection_tasks = [establish_connection(endpoint) for endpoint in self._endpoints]
+            results = await asyncio.gather(*connection_tasks, return_exceptions=True)
+            successful_connections = sum(1 for r in results if not isinstance(r, Exception))
 
-                if successful_connections == 0:
-                    logger.error(f"Failed to connect to any endpoints")
-                    raise grpc.RpcError("Failed to connect to any endpoints")
+            if successful_connections == 0:
+                logger.error(f"Failed to connect to any endpoints")
+                raise grpc.RpcError("Failed to connect to any endpoints")
 
-                if self._settings:
-                    await self._initialize_server(self._settings)
-                logger.info(f"Successfully connected to endpoints: {self._endpoints}")
-            except Exception as e:
-                logger.error(f"Error connecting to gRPC endpoints: {e}")
-                raise e
-            self._initialized = True
+            if self._settings:
+                await self._initialize_server(self._settings)
+            logger.info(f"Successfully connected to endpoints: {self._endpoints}")
+        except Exception as e:
+            logger.error(f"Error connecting to gRPC endpoints: {e}")
+            raise e
+        self._initialized = True
 
     async def _initialize_server(self, settings: dict[str, Any]) -> None:
         try:
@@ -132,8 +131,6 @@ class RemoteLayer(CallableLayer[BytesableType, BytesableType | None]):
 
     async def call(self, x: BytesableType) -> BytesableType | None:
         try:
-            await self._ensure_initialized()
-
             endpoint = await self._selector.next()
             stub = self._stubs[endpoint]
             if not stub:

@@ -4,6 +4,7 @@ import asyncio
 from typing import Any, Literal, Callable, Sequence, Awaitable, AsyncIterator
 from collections import deque
 
+from ..layers.layer import Layer
 from .._utils.naming import generate_name
 from .._utils.graph_visualizer import GraphVisualizer
 
@@ -28,6 +29,8 @@ class Stream:
         An async generator that produces source values (mutually exclusive with dependencies)
     operator : Callable[..., Awaitable[Any]], optional
         An async function to transform incoming values
+    layer : Layer, optional
+        A layer to apply to the stream
     """
 
     def __init__(
@@ -38,7 +41,7 @@ class Stream:
         dependency_strategy: Literal["all", "any"] = "all",
         generator: AsyncIterator[Any] | None = None,
         operator: Callable[..., Awaitable[Any]] | None = None,
-        cleanup: Callable[[], Awaitable[None]] | None = None,
+        layer: Layer | None = None,
     ) -> None:
         self.name = generate_name(name)
         self.dtype = dtype
@@ -49,7 +52,7 @@ class Stream:
         self._queue: asyncio.Queue[Any] = asyncio.Queue()
         self._generator: AsyncIterator[Any] | None = generator
         self._operator: Callable[..., Awaitable[Any]] | None = operator
-        self._cleanup: Callable[[], Awaitable[None]] | None = cleanup
+        self._layer: Layer | None = layer
 
         if self._generator and len(dependencies) > 0:
             raise ValueError("Cannot use generator with dependencies")
@@ -184,11 +187,6 @@ class Stream:
     def consumers(self) -> list[Stream]:
         """Get the list of consumers of this stream."""
         return self._consumers
-
-    async def cleanup(self) -> None:
-        """Cleanup resources after execution (if needed)."""
-        if self._cleanup:
-            await self._cleanup()
 
     async def __aiter__(self) -> AsyncIterator[Any]:
         """Allows the stream to be used in an async iterator."""

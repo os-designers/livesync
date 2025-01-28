@@ -26,6 +26,9 @@ class Layer(ABC):
             name = to_snake_case(self.__class__.__name__)
         self.name = generate_name(name)
 
+    async def init(self) -> None:  # noqa: B027
+        pass
+
     @abstractmethod
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
         pass

@@ -66,7 +66,7 @@ class InputLayer(Layer, AsyncIterator[T], Generic[T]):
             name=obj.name,
             dependencies=[],
             generator=obj.aiter(),
-            cleanup=obj.cleanup,
+            layer=obj,
         )
         return stream
 
