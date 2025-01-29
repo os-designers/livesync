@@ -15,28 +15,54 @@ annotated-types==0.7.0
     # via pydantic
 anyio==4.8.0
     # via httpx
+    # via starlette
+asgiref==3.8.1
+    # via beta9
 av==14.0.1
     # via livesync-io
 babel==2.16.0
     # via mkdocs-material
+bcrypt==4.2.1
+    # via paramiko
+beam-client==0.2.135
+beta9==0.1.160
+    # via beam-client
+betterproto-beta9==2.0.0b7
+    # via beta9
+black==25.1.0
+    # via betterproto-beta9
 certifi==2024.12.14
     # via httpcore
     # via httpx
     # via requests
+cffi==1.17.1
+    # via cryptography
+    # via pynacl
 charset-normalizer==3.4.1
     # via requests
 click==8.1.8
+    # via beta9
+    # via black
     # via click-option-group
     # via mkdocs
     # via mkdocstrings
     # via python-semantic-release
+    # via uvicorn
 click-option-group==0.5.6
     # via python-semantic-release
+cloudpickle==3.1.1
+    # via beta9
 colorama==0.4.6
     # via griffe
     # via mkdocs-material
+croniter==3.0.4
+    # via beta9
+cryptography==44.0.0
+    # via paramiko
 dotty-dict==1.3.1
     # via python-semantic-release
+fastapi==0.110.3
+    # via beta9
 ffmpeg-python==0.2.0
     # via livesync-io
 future==1.0.0
@@ -50,15 +76,26 @@ gitpython==3.1.44
 griffe==1.5.5
     # via mkdocstrings-python
 grpcio==1.69.0
+    # via beta9
     # via grpcio-tools
     # via livesync-io
-grpcio-tools==1.69.0
+grpcio-tools==1.62.3
+grpclib==0.4.7
+    # via beta9
+    # via betterproto-beta9
 h11==0.14.0
     # via httpcore
+    # via uvicorn
+h2==4.1.0
+    # via grpclib
+hpack==4.1.0
+    # via h2
 httpcore==1.0.7
     # via httpx
 httpx==0.28.1
     # via livesync-io
+hyperframe==6.1.0
+    # via h2
 idna==3.10
     # via anyio
     # via httpx
@@ -68,7 +105,10 @@ importlib-resources==6.5.2
     # via python-semantic-release
 iniconfig==2.0.0
     # via pytest
+isort==5.13.2
+    # via betterproto-beta9
 jinja2==3.1.5
+    # via betterproto-beta9
     # via mkdocs
     # via mkdocs-material
     # via mkdocstrings
@@ -107,8 +147,11 @@ mkdocstrings==0.27.0
     # via mkdocstrings-python
 mkdocstrings-python==1.13.0
     # via mkdocstrings
+multidict==6.1.0
+    # via grpclib
 mypy==1.14.1
 mypy-extensions==1.0.0
+    # via black
     # via mypy
 mypy-protobuf==3.6.0
 nodeenv==1.9.1
@@ -120,24 +163,35 @@ numpy==2.1.0
 opencv-python==4.10.0.84
     # via livesync-io
 packaging==24.2
+    # via black
     # via mkdocs
     # via pytest
 paginate==0.5.7
     # via mkdocs-material
+paramiko==3.5.0
+    # via beta9
 pathspec==0.12.1
+    # via black
     # via mkdocs
 platformdirs==4.3.6
+    # via black
     # via mkdocs-get-deps
     # via mkdocstrings
 pluggy==1.5.0
     # via pytest
-protobuf==5.29.3
+prompt-toolkit==3.0.50
+    # via beta9
+protobuf==4.25.6
+    # via beta9
     # via grpcio-tools
     # via livesync-io
     # via mypy-protobuf
 pyaudio==0.2.14
     # via livesync-io
+pycparser==2.22
+    # via cffi
 pydantic==2.10.6
+    # via fastapi
     # via python-semantic-release
 pydantic-core==2.27.2
     # via pydantic
@@ -147,6 +201,8 @@ pygments==2.19.1
 pymdown-extensions==10.14
     # via mkdocs-material
     # via mkdocstrings
+pynacl==1.5.0
+    # via paramiko
 pyqt6==6.8.0
     # via livesync-dashboard
     # via pyqt6-charts
@@ -166,10 +222,14 @@ pytest==8.3.4
     # via pytest-asyncio
 pytest-asyncio==0.25.2
 python-dateutil==2.9.0.post0
+    # via betterproto-beta9
+    # via croniter
     # via ghp-import
 python-gitlab==4.13.0
     # via python-semantic-release
 python-semantic-release==9.17.0
+pytz==2024.2
+    # via croniter
 pyyaml==6.0.2
     # via mkdocs
     # via mkdocs-get-deps
@@ -182,6 +242,8 @@ qasync==0.27.1
 regex==2024.11.6
     # via mkdocs-material
 requests==2.32.3
+    # via beam-client
+    # via beta9
     # via mkdocs-material
     # via python-gitlab
     # via python-semantic-release
@@ -189,6 +251,7 @@ requests==2.32.3
 requests-toolbelt==1.0.0
     # via python-gitlab
 rich==13.9.4
+    # via beta9
     # via python-semantic-release
 ruff==0.8.6
 setuptools==75.8.0
@@ -201,12 +264,19 @@ smmap==5.0.2
     # via gitdb
 sniffio==1.3.1
     # via anyio
+starlette==0.37.2
+    # via fastapi
 tomlkit==0.13.2
     # via python-semantic-release
+typeguard==2.13.3
+    # via beta9
 types-protobuf==4.25.0.20240417
     # via mypy-protobuf
 typing-extensions==4.12.2
     # via anyio
+    # via beta9
+    # via betterproto-beta9
+    # via fastapi
     # via livesync-io
     # via mypy
     # via pydantic
@@ -214,7 +284,16 @@ typing-extensions==4.12.2
     # via pyright
 urllib3==2.3.0
     # via requests
-watchdog==6.0.0
+uvicorn==0.29.0
+    # via beta9
+watchdog==4.0.2
+    # via beta9
     # via mkdocs
+wcwidth==0.2.13
+    # via prompt-toolkit
+websocket-client==1.8.0
+    # via beta9
+websockets==12.0
+    # via beam-client
 zipp==3.21.0
     # via importlib-metadata
