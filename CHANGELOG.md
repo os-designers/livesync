@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.3.8 (2025-01-29)
+
+### Bug Fixes
+
+- Change protobuf version
+  ([`3b0c812`](https://github.com/os-designers/livesync/commit/3b0c812062b93df9beb138c12115d2482d0a5620))
+
+
 ## v0.3.7 (2025-01-28)
 
 ### Bug Fixes
@@ -10,6 +18,11 @@
 
 - Add async init and replace remote layer with it
   ([`3aa9915`](https://github.com/os-designers/livesync/commit/3aa99156bdc5967414a066f9b3e4835db3b54bc2))
+
+### Chores
+
+- Install beam
+  ([`0f77ae1`](https://github.com/os-designers/livesync/commit/0f77ae139685dac50e5b6f4abaac0653e84b234a))
 
 ### Continuous Integration
 
