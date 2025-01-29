@@ -1,6 +1,25 @@
 # CHANGELOG
 
 
+## v0.3.7 (2025-01-28)
+
+### Bug Fixes
+
+- Add async init and replace remote layer with it
+  ([`01f5d0c`](https://github.com/os-designers/livesync/commit/01f5d0ca7ddff4bf80b6083b971a035b90041742))
+
+- Add async init and replace remote layer with it
+  ([`3aa9915`](https://github.com/os-designers/livesync/commit/3aa99156bdc5967414a066f9b3e4835db3b54bc2))
+
+### Continuous Integration
+
+- Add trigger for ci
+  ([`29df264`](https://github.com/os-designers/livesync/commit/29df264f3f31f1a5aea4463dd20450f1b1c85361))
+
+- Add trigger for ci
+  ([`31cf517`](https://github.com/os-designers/livesync/commit/31cf517146fdd35c059e0ed5d05688cd3fc9b920))
+
+
 ## v0.3.6 (2025-01-28)
 
 ### Bug Fixes
