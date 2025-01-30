@@ -33,7 +33,7 @@ class Run:
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
         self.runner.__exit__(exc_type, exc_value, traceback)
 
-    async def wait(self, timeout: float | None = None) -> "Run":
+    async def wait(self, timeout: float | None = None) -> Run:
         """Wait for this run to finish, optionally with a timeout."""
         if self.status == "pending":
             self.status = "running"
@@ -43,26 +43,25 @@ class Run:
             await asyncio.wait_for(asyncio.gather(*self.tasks), timeout=timeout)
             if self.status == "running":
                 self.status = "completed"
-                self._end_time = time.monotonic()
-        except asyncio.TimeoutError:
+        except (asyncio.TimeoutError, asyncio.exceptions.CancelledError, KeyboardInterrupt):
             self.cancel()
             self.status = "cancelled"
-            self._end_time = time.monotonic()
-            logger.debug("Timed out waiting for tasks; all tasks cancelled.")
-        except Exception:
+            logger.info("Run cancelled successfully.")
+        except Exception as e:
+            self.cancel()
             self.status = "failed"
             self._end_time = time.monotonic()
+            logger.error(f"Run failed with exception: {e}")
             raise
+        finally:
+            self._end_time = time.monotonic()
         return self
 
     def cancel(self) -> None:
         """Cancel all tasks immediately."""
-        for task in self.tasks:
-            task.cancel()
-
-        if self.status in ("pending", "running"):
-            self.status = "cancelled"
-            self._end_time = time.monotonic()
+        for t in self.tasks:
+            if not t.done():
+                t.cancel()
 
     @property
     def runtime(self) -> float | None:
