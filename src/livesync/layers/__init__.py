@@ -7,6 +7,7 @@ from .core.merge_layer import Merge
 from .numeric.multiply import Multiply
 from .core.lambda_layer import Lambda
 from .video.fps_control import FpsControlLayer
+from .core.callable_layer import CallableLayer
 from .audio.audio_recorder import AudioRecorderLayer
 from .media.media_recorder import MediaRecorderLayer
 from .video.video_recorder import VideoRecorderLayer
@@ -17,6 +18,7 @@ from .remote.server.remote_layer_server import RemoteLayerServer
 
 __all__ = [
     "InputLayer",
+    "CallableLayer",
     "Lambda",
     "PeriodicConstantInput",
     "WebcamInput",

@@ -1,3 +1,5 @@
+import asyncio
+
 import livesync as ls
 from livesync import layers
 
@@ -34,6 +36,10 @@ if __name__ == "__main__":
     f3 = layers.Lambda(function=async_tuple)
     y = f3(u)
 
-    sync = ls.Sync(inputs=[x1, x2], outputs=[u])
-    with sync.compile() as runner:
-        runner.run(continuous=True, callback=ls.LoggingCallback())
+    async def main():
+        sync = ls.Sync(inputs=[x1, x2], outputs=[y])
+        with sync.compile() as runner:
+            run = await runner.async_run(continuous=True, callback=ls.LoggingCallback(log_level="info"))
+            await run.wait()
+
+    asyncio.run(main())

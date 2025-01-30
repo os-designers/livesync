@@ -45,7 +45,7 @@ class Runner:
         self._tasks: list[asyncio.Task[Any]] = []
         self._step_counts: dict[str, int] = {}
 
-    def run(self, continuous: bool = True, callback: CallbackProtocol | None = None) -> Run:
+    def run(self, continuous: bool = True, callback: CallbackProtocol | None = None) -> None:
         """Execute the graph synchronously.
 
         Parameters
@@ -54,15 +54,13 @@ class Runner:
             If True, runs nodes in continuous loop mode, by default True
         callback : CallbackProtocol | None, optional
             Callback for monitoring execution events, by default None
-
-        Returns
-        -------
-        Run
-            Handle to monitor and control the execution
         """
         if callback is None:
             callback = LoggingCallback(log_level="debug")
-        return asyncio.run(self._execute_sync(continuous=continuous, callback=callback))
+        try:
+            asyncio.run(self._execute_sync(continuous=continuous, callback=callback))
+        except KeyboardInterrupt:
+            return None
 
     async def _execute_sync(self, continuous: bool = True, callback: CallbackProtocol | None = None) -> Run:
         run = await self.async_run(continuous=continuous, callback=callback)
@@ -123,6 +121,7 @@ class Runner:
     async def _run_input_stream(self, stream: Stream, continuous: bool) -> None:
         """Execute stream in parallel while respecting its topological dependencies."""
         self._step_counts[stream.name] = 0
+        consumer_tasks: list[asyncio.Task[Any]] = []
 
         async_iterator = stream.__aiter__()
 
@@ -160,7 +159,8 @@ class Runner:
                         )
 
                     if value:
-                        await process_consumers(consumer, value)
+                        task = asyncio.create_task(process_consumers(consumer, value))
+                        consumer_tasks.append(task)
 
                 except Exception as e:
                     logger.error(f"Error processing consumer {consumer.name}: {e}")
@@ -175,54 +175,66 @@ class Runner:
                             )
                         )
 
-        while self._running:
-            self._step_counts[stream.name] += 1
-            current_step = self._step_counts[stream.name]
-
-            if self._callback:
-                self._callback.on_stream_start(
-                    StreamEvent(
-                        event_type="start",
-                        stream_name=stream.name,
-                        input=None,
-                        step=current_step,
-                        queue_size=len(stream),
-                    )
-                )
-
-            try:
-                value = await async_iterator.__anext__()
-
-                if value:
-                    asyncio.create_task(process_consumers(stream, value))
+        try:
+            while self._running:
+                self._step_counts[stream.name] += 1
+                current_step = self._step_counts[stream.name]
 
                 if self._callback:
-                    self._callback.on_stream_end(
+                    self._callback.on_stream_start(
                         StreamEvent(
+                            event_type="start",
                             stream_name=stream.name,
+                            input=None,
                             step=current_step,
-                            output=value,
-                            event_type="end",
                             queue_size=len(stream),
                         )
                     )
 
-                if not continuous:
-                    self._running = False
+                try:
+                    value = await async_iterator.__anext__()
+
+                    if value:
+                        asyncio.create_task(process_consumers(stream, value))
+
+                    if self._callback:
+                        self._callback.on_stream_end(
+                            StreamEvent(
+                                stream_name=stream.name,
+                                step=current_step,
+                                output=value,
+                                event_type="end",
+                                queue_size=len(stream),
+                            )
+                        )
+
+                    if not continuous:
+                        self._running = False
+                        break
+                except asyncio.CancelledError:
                     break
 
-            except StopAsyncIteration:
-                break
+                except StopAsyncIteration:
+                    break
+        finally:
+            for t in consumer_tasks:
+                if not t.done():
+                    t.cancel()
+
+            if consumer_tasks:
+                await asyncio.gather(*consumer_tasks, return_exceptions=True)
+                logger.info(f"Consumer tasks for stream '{stream.name}' cancelled.")
+
+            self._running = False
 
     def cleanup(self) -> None:
         """Cleanup resources after execution (if needed)."""
-        asyncio.run(self._async_cleanup())
-        # try:
-        #     loop = asyncio.get_running_loop()
-        #     loop.create_task(self._async_cleanup())
-        # except RuntimeError:
-        #     # No running loop, run cleanup synchronously
-        #     asyncio.run(self._async_cleanup())
+        try:
+            loop = asyncio.get_running_loop()
+            loop.create_task(self._async_cleanup())
+        except RuntimeError:
+            # No running loop, run cleanup synchronously
+            asyncio.run(self._async_cleanup())
 
     async def _async_cleanup(self) -> None:
         """Asynchronous cleanup implementation."""
@@ -233,7 +245,8 @@ class Runner:
 
             # Cancel all tasks
             for t in self._tasks:
-                t.cancel()
+                if not t.done():
+                    t.cancel()
 
             self._running = False
             self._tasks.clear()
