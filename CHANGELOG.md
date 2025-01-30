@@ -1,6 +1,26 @@
 # CHANGELOG
 
 
+## v0.3.9 (2025-01-30)
+
+### Bug Fixes
+
+- Safely changed to terminate the run
+  ([`d2faa97`](https://github.com/os-designers/livesync/commit/d2faa97a1efac27523e3bdad94e55a2cf274a61b))
+
+- Safely changed to terminate the run
+  ([`18815a4`](https://github.com/os-designers/livesync/commit/18815a410dee5ae8c52d3ed29ef61b726afae0d9))
+
+- Safely changed to terminate the run
+  ([`48fe808`](https://github.com/os-designers/livesync/commit/48fe808b7984b5955810a39255c45637209ddfba))
+
+- Safely changed to terminate the run
+  ([`632c2d9`](https://github.com/os-designers/livesync/commit/632c2d937c3a8c11c0f04ddffa94e7b2b4cf7f42))
+
+- Safely changed to terminate the run
+  ([`d8cf86e`](https://github.com/os-designers/livesync/commit/d8cf86e2750298f34a66d1cc476adfcd73f587f8))
+
+
 ## v0.3.8 (2025-01-29)
 
 ### Bug Fixes
