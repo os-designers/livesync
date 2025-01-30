@@ -19,5 +19,4 @@ if __name__ == "__main__":
     sync = ls.Sync(inputs=[x], outputs=[y])
 
     with sync.compile() as runner:
-        run = runner.run(callback=ls.LoggingCallback())
-        print(run)
+        runner.run(callback=ls.LoggingCallback())
