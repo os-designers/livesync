@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## v0.3.10 (2025-02-01)
+
+### Bug Fixes
+
+- Add watermark layer and support multiple buffer types in webcam input
+  ([`dfdc138`](https://github.com/os-designers/livesync/commit/dfdc13896fb07bad06abc58e2e4d0ab8d2badf57))
+
+- Add watermark layer and support multiple buffer types in webcam input
+  ([`77b75a8`](https://github.com/os-designers/livesync/commit/77b75a821403a2df53bbe8e4ad4845bb233c7c37))
+
+
 ## v0.3.9 (2025-01-30)
 
 ### Bug Fixes
