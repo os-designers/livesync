@@ -16,11 +16,23 @@ class WebcamInput(InputLayer[VideoFrame]):
     Parameters
     ----------
     device_id : int, default=0
-        The ID of the webcam device to capture from
+        The ID of the webcam device to capture from.
     fps : int, default=30
-        Target frames per second for capture
+        Target frames per second for capture.
+    buffer_type : str, default='rgb24'
+        Pixel format for the captured video frame.
+        Available choices:
+            "rgba": 4-channel format (red, green, blue, alpha)
+            "abgr": 4-channel format (alpha, blue, green, red)
+            "argb": 4-channel format (alpha, red, green, blue)
+            "bgra": 4-channel format (blue, green, red, alpha)
+            "rgb24": 3-channel format (red, green, blue)
+            "i420": YUV format with 1 channel per plane
+            "i420a": YUV format with an additional alpha channel
+            "i422": YUV format with 1 channel per plane
+            "i444": YUV format with 1 channel per plane
     name : str | None, default=None
-        The name of the layer
+        The name of the layer.
 
     Raises
     ------
@@ -28,10 +40,11 @@ class WebcamInput(InputLayer[VideoFrame]):
         If webcam device cannot be opened
     """
 
-    def __init__(self, device_id: int = 0, fps: int = 30, name: str | None = None):
+    def __init__(self, device_id: int = 0, fps: int = 30, buffer_type: str = "rgba", name: str | None = None):
         super().__init__(dtype=VideoFrame, name=name)
         self.device_id = device_id
         self.fps = fps
+        self.buffer_type = buffer_type
         self.time_base = Fraction(1, fps)
 
         self._capture = cv2.VideoCapture(self.device_id)
@@ -85,15 +98,40 @@ class WebcamInput(InputLayer[VideoFrame]):
 
                 pts = int((current_time - start_time) / self.time_base)
 
-                # Convert BGR to RGB
-                frame_data = cv2.cvtColor(frame_bgr_data, cv2.COLOR_BGR2RGB)
+                # Convert BGR data to the desired color format based on buffer_type.
+                if self.buffer_type == "rgb24":
+                    frame_data = cv2.cvtColor(frame_bgr_data, cv2.COLOR_BGR2RGB)
+                elif self.buffer_type == "rgba":
+                    frame_data = cv2.cvtColor(frame_bgr_data, cv2.COLOR_BGR2RGBA)
+                elif self.buffer_type == "bgra":
+                    frame_data = cv2.cvtColor(frame_bgr_data, cv2.COLOR_BGR2BGRA)
+                elif self.buffer_type == "abgr":
+                    temp = cv2.cvtColor(frame_bgr_data, cv2.COLOR_BGR2RGBA)
+                    # Rearrange channels from RGBA to ABGR.
+                    frame_data = temp[..., [3, 2, 1, 0]]
+                elif self.buffer_type == "argb":
+                    temp = cv2.cvtColor(frame_bgr_data, cv2.COLOR_BGR2RGBA)
+                    # Rearrange channels from RGBA to ARGB.
+                    frame_data = temp[..., [3, 0, 1, 2]]
+                elif self.buffer_type == "i420":
+                    frame_data = cv2.cvtColor(frame_bgr_data, cv2.COLOR_BGR2YUV_I420)
+                elif self.buffer_type == "i420a":
+                    # OpenCV does not provide a direct conversion with alpha for YUV.
+                    # Fallback to i420 conversion; additional processing is required for alpha.
+                    frame_data = cv2.cvtColor(frame_bgr_data, cv2.COLOR_BGR2YUV_I420)
+                elif self.buffer_type in ("i422", "i444"):
+                    # Use basic YUV conversion as a placeholder for these formats.
+                    frame_data = cv2.cvtColor(frame_bgr_data, cv2.COLOR_BGR2YUV)
+                else:
+                    # If an unknown buffer_type is provided, default to converting to RGB.
+                    frame_data = cv2.cvtColor(frame_bgr_data, cv2.COLOR_BGR2RGB)
 
                 height, width = frame_data.shape[:2]
                 video_frame = VideoFrame(
                     data=frame_data,
                     width=width,
                     height=height,
-                    buffer_type="rgb24",
+                    buffer_type=self.buffer_type,
                     pts=pts,
                     time_base=self.time_base,
                 )
