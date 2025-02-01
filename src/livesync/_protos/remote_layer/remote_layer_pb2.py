@@ -3,7 +3,6 @@
 # source: remote_layer/remote_layer.proto
 # Protobuf Python Version: 4.25.1
 """Generated protocol buffer code."""
-
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import symbol_database as _symbol_database
@@ -16,25 +15,23 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
-    b'\n\x1fremote_layer/remote_layer.proto\x12\x08livesync\x1a\x1cgoogle/protobuf/struct.proto"8\n\x0bInitRequest\x12)\n\x08settings\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct"6\n\x0cInitResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x15\n\rerror_message\x18\x02 \x01(\t":\n\x0b\x43\x61llRequest\x12\t\n\x01x\x18\x01 \x01(\x0c\x12 \n\x04type\x18\x02 \x01(\x0e\x32\x12.livesync.DataType"n\n\x0c\x43\x61llResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0e\n\x01y\x18\x02 \x01(\x0cH\x00\x88\x01\x01\x12 \n\x04type\x18\x03 \x01(\x0e\x32\x12.livesync.DataType\x12\x15\n\rerror_message\x18\x04 \x01(\tB\x04\n\x02_y*x\n\x08\x44\x61taType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x08\n\x04NONE\x10\x01\x12\t\n\x05\x42YTES\x10\x02\x12\n\n\x06STRING\x10\x03\x12\t\n\x05\x46LOAT\x10\x04\x12\x07\n\x03INT\x10\x05\x12\x08\n\x04\x42OOL\x10\x06\x12\x0f\n\x0bVIDEO_FRAME\x10\x07\x12\x0f\n\x0b\x41UDIO_FRAME\x10\x08\x32{\n\x0bRemoteLayer\x12\x35\n\x04Init\x12\x15.livesync.InitRequest\x1a\x16.livesync.InitResponse\x12\x35\n\x04\x43\x61ll\x12\x15.livesync.CallRequest\x1a\x16.livesync.CallResponseb\x06proto3'
-)
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1fremote_layer/remote_layer.proto\x12\x08livesync\x1a\x1cgoogle/protobuf/struct.proto\"8\n\x0bInitRequest\x12)\n\x08settings\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct\"6\n\x0cInitResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x15\n\rerror_message\x18\x02 \x01(\t\":\n\x0b\x43\x61llRequest\x12\t\n\x01x\x18\x01 \x01(\x0c\x12 \n\x04type\x18\x02 \x01(\x0e\x32\x12.livesync.DataType\"n\n\x0c\x43\x61llResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0e\n\x01y\x18\x02 \x01(\x0cH\x00\x88\x01\x01\x12 \n\x04type\x18\x03 \x01(\x0e\x32\x12.livesync.DataType\x12\x15\n\rerror_message\x18\x04 \x01(\tB\x04\n\x02_y*x\n\x08\x44\x61taType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x08\n\x04NONE\x10\x01\x12\t\n\x05\x42YTES\x10\x02\x12\n\n\x06STRING\x10\x03\x12\t\n\x05\x46LOAT\x10\x04\x12\x07\n\x03INT\x10\x05\x12\x08\n\x04\x42OOL\x10\x06\x12\x0f\n\x0bVIDEO_FRAME\x10\x07\x12\x0f\n\x0b\x41UDIO_FRAME\x10\x08\x32{\n\x0bRemoteLayer\x12\x35\n\x04Init\x12\x15.livesync.InitRequest\x1a\x16.livesync.InitResponse\x12\x35\n\x04\x43\x61ll\x12\x15.livesync.CallRequest\x1a\x16.livesync.CallResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
-_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, "remote_layer.remote_layer_pb2", _globals)
+_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'remote_layer.remote_layer_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
-    DESCRIPTOR._options = None
-    _globals["_DATATYPE"]._serialized_start = 361
-    _globals["_DATATYPE"]._serialized_end = 481
-    _globals["_INITREQUEST"]._serialized_start = 75
-    _globals["_INITREQUEST"]._serialized_end = 131
-    _globals["_INITRESPONSE"]._serialized_start = 133
-    _globals["_INITRESPONSE"]._serialized_end = 187
-    _globals["_CALLREQUEST"]._serialized_start = 189
-    _globals["_CALLREQUEST"]._serialized_end = 247
-    _globals["_CALLRESPONSE"]._serialized_start = 249
-    _globals["_CALLRESPONSE"]._serialized_end = 359
-    _globals["_REMOTELAYER"]._serialized_start = 483
-    _globals["_REMOTELAYER"]._serialized_end = 606
+  DESCRIPTOR._options = None
+  _globals['_DATATYPE']._serialized_start=361
+  _globals['_DATATYPE']._serialized_end=481
+  _globals['_INITREQUEST']._serialized_start=75
+  _globals['_INITREQUEST']._serialized_end=131
+  _globals['_INITRESPONSE']._serialized_start=133
+  _globals['_INITRESPONSE']._serialized_end=187
+  _globals['_CALLREQUEST']._serialized_start=189
+  _globals['_CALLREQUEST']._serialized_end=247
+  _globals['_CALLRESPONSE']._serialized_start=249
+  _globals['_CALLRESPONSE']._serialized_end=359
+  _globals['_REMOTELAYER']._serialized_start=483
+  _globals['_REMOTELAYER']._serialized_end=606
 # @@protoc_insertion_point(module_scope)
