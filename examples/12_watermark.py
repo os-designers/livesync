@@ -1,6 +1,7 @@
+import cv2
+
 import livesync as ls
 from livesync import layers
-import cv2
 
 if __name__ == "__main__":
     # Example: Webcam Recording with Watermark Pipeline

@@ -1,3 +1,4 @@
+from typing import Literal, cast
 from dataclasses import dataclass
 
 import cv2
@@ -20,8 +21,8 @@ from PyQt6.QtWidgets import (
 @dataclass
 class StreamSettings:
     webcam_device_id: int
-    quality: str
-    target_fps: int
+    max_quality: Literal["4K", "2K", "1080p", "720p", "480p", "360p", "240p", "144p"]
+    max_fps: int
 
 
 class MainWindow(QMainWindow):
@@ -74,25 +75,25 @@ class MainWindow(QMainWindow):
         camera_layout.addWidget(self.camera_combo)
         device_layout.addLayout(camera_layout)
 
-        # Quality settings
-        quality_layout = QHBoxLayout()
-        quality_label = QLabel("Quality:")
-        self.quality_combo = QComboBox()
-        self.quality_combo.addItems(["144p", "240p", "360p", "480p", "SD", "HD", "FHD", "2K", "4K"])  # type: ignore
-        self.quality_combo.setCurrentText("HD")
-        quality_layout.addWidget(quality_label)
-        quality_layout.addWidget(self.quality_combo)
-        device_layout.addLayout(quality_layout)
+        # Max Quality settings
+        max_quality_layout = QHBoxLayout()
+        max_quality_label = QLabel("Max Quality:")
+        self.max_quality_combo = QComboBox()
+        self.max_quality_combo.addItems(["4K", "2K", "1080p", "720p", "480p", "360p", "240p", "144p"])  # type: ignore
+        self.max_quality_combo.setCurrentText("720p")
+        max_quality_layout.addWidget(max_quality_label)
+        max_quality_layout.addWidget(self.max_quality_combo)
+        device_layout.addLayout(max_quality_layout)
 
-        # Target FPS settings
-        target_fps_layout = QHBoxLayout()
-        target_fps_label = QLabel("Target FPS:")
-        self.target_fps_spin = QSpinBox()
-        self.target_fps_spin.setRange(1, 60)
-        self.target_fps_spin.setValue(20)
-        target_fps_layout.addWidget(target_fps_label)
-        target_fps_layout.addWidget(self.target_fps_spin)
-        device_layout.addLayout(target_fps_layout)
+        # Max FPS settings
+        max_fps_layout = QHBoxLayout()
+        max_fps_label = QLabel("Max FPS:")
+        self.max_fps_spin = QSpinBox()
+        self.max_fps_spin.setRange(1, 60)
+        self.max_fps_spin.setValue(20)
+        max_fps_layout.addWidget(max_fps_label)
+        max_fps_layout.addWidget(self.max_fps_spin)
+        device_layout.addLayout(max_fps_layout)
 
         # Apply button
         self.apply_button = QPushButton("Apply Settings")
@@ -118,8 +119,11 @@ class MainWindow(QMainWindow):
     def _on_settings_changed(self):
         settings = StreamSettings(
             webcam_device_id=self.camera_combo.currentIndex(),
-            quality=self.quality_combo.currentText(),
-            target_fps=self.target_fps_spin.value(),
+            max_quality=cast(
+                Literal["4K", "2K", "1080p", "720p", "480p", "360p", "240p", "144p"],
+                self.max_quality_combo.currentText(),
+            ),
+            max_fps=self.max_fps_spin.value(),
         )
         self.settings_changed.emit(settings)
 

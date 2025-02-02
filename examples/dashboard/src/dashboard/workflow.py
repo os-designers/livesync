@@ -1,3 +1,4 @@
+from typing import Literal
 from dataclasses import dataclass
 
 from PyQt6.QtGui import QImage, QPixmap
@@ -22,8 +23,8 @@ class WorkflowManager:
         self,
         window: MainWindow,
         webcam_device_id: int = 0,
-        quality: str = "HD",
-        target_fps: int = 20,
+        max_quality: Literal["4K", "2K", "1080p", "720p", "480p", "360p", "240p", "144p"] = "720p",
+        max_fps: int = 20,
     ) -> ls.Run:
         global _window
         _window = window
@@ -36,7 +37,7 @@ class WorkflowManager:
         x = layers.WebcamInput(device_id=webcam_device_id)
 
         # Option 1. Use local frame rate node
-        f1 = layers.FpsControlLayer(fps=target_fps)
+        f1 = layers.FpsControlLayer(fps=max_fps)
 
         # Option 2. Use remote frame rate node for testing
         # f1 = RemoteNode(
@@ -45,13 +46,30 @@ class WorkflowManager:
         #     endpoints=["localhost:50051"],
         # )
 
-        f2 = layers.VideoQualityControlLayer(quality=quality)
+        f2 = layers.VideoQualityControlLayer(quality=max_quality)
 
         async def update_frame(x: ls.VideoFrame) -> None:
             global workflow_manager
             height, width = x.data.shape[:2]
-            bytes_per_line = 3 * width
-            qimage = QImage(x.data.tobytes(), width, height, bytes_per_line, QImage.Format.Format_RGB888)
+
+            # Determine the number of channels.
+            channels = x.data.shape[2] if len(x.data.shape) > 2 else 1
+
+            if channels == 3:
+                # 3-channel image: use Format_RGB888.
+                bytes_per_line = 3 * width
+                qimage = QImage(x.data.tobytes(), width, height, bytes_per_line, QImage.Format.Format_RGB888)
+            elif channels == 4:
+                # 4-channel image: use Format_RGBA8888.
+                bytes_per_line = 4 * width
+                qimage = QImage(x.data.tobytes(), width, height, bytes_per_line, QImage.Format.Format_RGBA8888)
+            elif channels == 1:
+                # 1-channel (grayscale) image: use Format_Grayscale8.
+                bytes_per_line = width
+                qimage = QImage(x.data.tobytes(), width, height, bytes_per_line, QImage.Format.Format_Grayscale8)
+            else:
+                raise ValueError(f"Unsupported number of channels: {channels}")
+
             pixmap = QPixmap.fromImage(qimage)
             _window.update_frame(pixmap)  # type: ignore
 
