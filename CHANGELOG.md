@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.3.11 (2025-02-02)
+
+### Bug Fixes
+
+- Update dashboard and video quality control with more precise quality settings
+  ([`e4a083e`](https://github.com/os-designers/livesync/commit/e4a083ea7fcab04de3c84547c4c22e082cfbd136))
+
+
 ## v0.3.10 (2025-02-01)
 
 ### Bug Fixes
