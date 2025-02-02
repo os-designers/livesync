@@ -50,7 +50,7 @@ class WatermarkLayer(CallableLayer[VideoFrame, VideoFrame | None]):
             self.watermark_image: NDArray[np.uint8] = cv2.imdecode(nparr, cv2.IMREAD_UNCHANGED)  # type: ignore
         except Exception as e:
             logger.error(f"Failed to decode watermark image from the provided bytes: {e}")
-            raise ValueError("Failed to decode watermark image from the provided bytes.")
+            raise ValueError("Failed to decode watermark image from the provided bytes.") from e
 
     async def call(self, x: VideoFrame) -> VideoFrame | None:
         """

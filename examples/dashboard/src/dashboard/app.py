@@ -26,8 +26,8 @@ class Application:
         await workflow_manager.start_workflow(
             window=self.window,
             webcam_device_id=settings.webcam_device_id,
-            quality=settings.quality,
-            target_fps=settings.target_fps,
+            max_quality=settings.max_quality,
+            max_fps=settings.max_fps,
         )
 
     async def run(self):

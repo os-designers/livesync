@@ -11,20 +11,19 @@ class VideoQualityControlLayer(CallableLayer[VideoFrame, VideoFrame | None]):
     """A layer that adjusts video quality based on predefined quality presets."""
 
     QUALITY_PRESETS = {
-        "4K": (3840, 2160),
-        "2K": (2560, 1440),
-        "FHD": (1920, 1080),
-        "HD": (1280, 720),
-        "SD": (854, 480),
-        "480p": (640, 480),
-        "360p": (480, 360),
-        "240p": (426, 240),
-        "144p": (256, 144),
+        "4K": (3840, 2160),  # UHD (Ultra HD)
+        "2K": (2560, 1440),  # QHD (Quad HD)
+        "1080p": (1920, 1080),  # FHD (Full HD)
+        "720p": (1280, 720),  # HD (High Definition)
+        "480p": (854, 480),  # SD (Standard Definition)
+        "360p": (640, 360),  # nHD (Near HD)
+        "240p": (426, 240),  # WQVGA (Wide QVGA)
+        "144p": (256, 144),  # QQVGA (Quarter-QVGA)
     }
 
     def __init__(
         self,
-        quality: Literal["4K", "2K", "FHD", "HD", "SD", "480p", "360p", "240p", "144p"] = "HD",
+        quality: Literal["4K", "2K", "1080p", "720p", "480p", "360p", "240p", "144p"] = "720p",
         name: str | None = None,
     ) -> None:
         super().__init__(name=name)

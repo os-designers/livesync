@@ -1,6 +1,7 @@
 from .video.webcam import WebcamInput
 from .remote.remote import RemoteLayer
 from .operators.delay import DelayLayer
+from .video.watermark import WatermarkLayer
 from .audio.microphone import MicrophoneInput
 from .core.input_layer import InputLayer
 from .core.merge_layer import Merge
@@ -11,7 +12,6 @@ from .core.callable_layer import CallableLayer
 from .audio.audio_recorder import AudioRecorderLayer
 from .media.media_recorder import MediaRecorderLayer
 from .video.video_recorder import VideoRecorderLayer
-from .video.watermark import WatermarkLayer
 from .media.media_synchronizer import MediaSynchronizerLayer
 from .numeric.periodic_constant import PeriodicConstantInput
 from .video.video_quality_control import VideoQualityControlLayer
