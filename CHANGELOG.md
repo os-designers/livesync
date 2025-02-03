@@ -1,6 +1,25 @@
 # CHANGELOG
 
 
+## v0.3.11 (2025-02-02)
+
+### Bug Fixes
+
+- Update dashboard and video quality control with more precise quality settings
+  ([`e4a083e`](https://github.com/os-designers/livesync/commit/e4a083ea7fcab04de3c84547c4c22e082cfbd136))
+
+
+## v0.3.10 (2025-02-01)
+
+### Bug Fixes
+
+- Add watermark layer and support multiple buffer types in webcam input
+  ([`dfdc138`](https://github.com/os-designers/livesync/commit/dfdc13896fb07bad06abc58e2e4d0ab8d2badf57))
+
+- Add watermark layer and support multiple buffer types in webcam input
+  ([`77b75a8`](https://github.com/os-designers/livesync/commit/77b75a821403a2df53bbe8e4ad4845bb233c7c37))
+
+
 ## v0.3.9 (2025-01-30)
 
 ### Bug Fixes
