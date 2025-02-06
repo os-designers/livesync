@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.3.13 (2025-02-06)
+
+### Bug Fixes
+
+- Update dependencies of protobuf
+  ([`8a3d2a7`](https://github.com/os-designers/livesync/commit/8a3d2a717a2db3e6c8210232f738dafcf6fd5354))
+
+
 ## v0.3.12 (2025-02-06)
 
 ### Bug Fixes
