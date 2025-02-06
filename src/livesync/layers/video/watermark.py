@@ -103,7 +103,11 @@ class WatermarkLayer(CallableLayer[VideoFrame, VideoFrame | None]):
 
             # Overlay the watermark onto the frame.
             watermarked_frame: NDArray[np.uint8] = self._overlay_image(
-                frame_buffer, resized_watermark, x_pos, y_pos, self.opacity  # type: ignore
+                frame_buffer,  # type: ignore
+                resized_watermark,  # type: ignore
+                x_pos,
+                y_pos,
+                self.opacity,
             )
 
             # Return the modified video frame.

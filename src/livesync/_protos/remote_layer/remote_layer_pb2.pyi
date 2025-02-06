@@ -22,7 +22,9 @@ class _DataType:
     ValueType = typing.NewType("ValueType", builtins.int)
     V: typing_extensions.TypeAlias = ValueType
 
-class _DataTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_DataType.ValueType], builtins.type):
+class _DataTypeEnumTypeWrapper(
+    google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_DataType.ValueType], builtins.type
+):
     DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
     UNKNOWN: _DataType.ValueType  # 0
     NONE: _DataType.ValueType  # 1
@@ -78,7 +80,9 @@ class InitResponse(google.protobuf.message.Message):
         success: builtins.bool = ...,
         error_message: builtins.str = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["error_message", b"error_message", "success", b"success"]) -> None: ...
+    def ClearField(
+        self, field_name: typing.Literal["error_message", b"error_message", "success", b"success"]
+    ) -> None: ...
 
 global___InitResponse = InitResponse
 
@@ -121,7 +125,12 @@ class CallResponse(google.protobuf.message.Message):
         error_message: builtins.str = ...,
     ) -> None: ...
     def HasField(self, field_name: typing.Literal["_y", b"_y", "y", b"y"]) -> builtins.bool: ...
-    def ClearField(self, field_name: typing.Literal["_y", b"_y", "error_message", b"error_message", "success", b"success", "type", b"type", "y", b"y"]) -> None: ...
+    def ClearField(
+        self,
+        field_name: typing.Literal[
+            "_y", b"_y", "error_message", b"error_message", "success", b"success", "type", b"type", "y", b"y"
+        ],
+    ) -> None: ...
     def WhichOneof(self, oneof_group: typing.Literal["_y", b"_y"]) -> typing.Literal["y"] | None: ...
 
 global___CallResponse = CallResponse
