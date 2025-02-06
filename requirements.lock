@@ -39,7 +39,7 @@ numpy==2.1.0
     # via pyqtgraph
 opencv-python==4.10.0.84
     # via livesync-io
-protobuf==4.25.6
+protobuf==5.29.3
     # via livesync-io
 pyaudio==0.2.14
     # via livesync-io

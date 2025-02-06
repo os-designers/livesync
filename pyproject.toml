@@ -14,8 +14,8 @@ dependencies = [
     "opencv-python>=4.10.0.84",
     "pyaudio>=0.2.14",
     "ffmpeg-python>=0.2.0",
-    "protobuf>=4.25.1, <5.0.0",
     "av>=14.0.1",
+    "protobuf>=5.29.3",
 ]
 readme = "README.md"
 requires-python = ">= 3.10"
@@ -50,14 +50,13 @@ dev-dependencies = [
     "pytest-asyncio",
     "ruff",
     "importlib-metadata>=6.7.0",
-    "types-protobuf>=4.0.0, <5.0.0",
-    "mypy-protobuf>=3.6.0, <4.0.0",
     "mkdocs-material>=9.5.0",
     "mkdocstrings[python]>=0.24.0",
     "rich>=13.9.4",
     "python-semantic-release>=9.17.0",
-    "beam-client>=0.2.135",
     "grpcio-tools>=1.62.0",
+    "types-protobuf>=5.29.1.20241207",
+    "mypy-protobuf>=3.6.0",
 ]
 
 [tool.rye.workspace]
