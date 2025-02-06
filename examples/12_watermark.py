@@ -19,10 +19,10 @@ if __name__ == "__main__":
     logo_image = cv2.imencode(".png", watermark_img)[1].tobytes()
 
     f1 = layers.WatermarkLayer(watermark_bytes=logo_image, position="top-left", watermark_scale=0.15, opacity=0.6)
-    f2 = layers.VideoRecorderLayer(filename="./examples/output.mp4")
+    f2 = layers.VideoQualityControlLayer(quality="240p")
+    f3 = layers.VideoRecorderLayer(filename="./examples/output.mp4")
 
-    h = f1(x)
-    y = f2(x)
+    y = f3(f2(f1(x)))
 
     sync = ls.Sync(inputs=[x], outputs=[y])
     with sync.compile() as runner:

@@ -42,7 +42,7 @@ class WorkflowManager:
         # Option 2. Use remote frame rate node for testing
         # f1 = RemoteNode(
         #     name="frame_rate",
-        #     settings={"frame_rate_node": {"fps": target_fps}},
+        #     settings={"frame_rate_node": {"fps": max_fps}},
         #     endpoints=["localhost:50051"],
         # )
 

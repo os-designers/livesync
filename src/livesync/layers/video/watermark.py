@@ -37,12 +37,14 @@ class WatermarkLayer(CallableLayer[VideoFrame, VideoFrame | None]):
         position: Literal["top-left", "top-right", "bottom-left", "bottom-right", "center"] = "bottom-right",
         watermark_scale: float = 0.1,
         opacity: float = 1.0,
+        margin_ratio: float = 0.02,
         name: str | None = None,
     ) -> None:
         super().__init__(name=name)
         self.position = position
         self.watermark_scale = watermark_scale
         self.opacity = opacity
+        self.margin_ratio = margin_ratio
 
         # Decode the watermark from bytes. The watermark may contain an alpha channel.
         nparr = np.frombuffer(watermark_bytes, np.uint8)
@@ -67,8 +69,8 @@ class WatermarkLayer(CallableLayer[VideoFrame, VideoFrame | None]):
             The watermarked frame, or None if an error occurs.
         """
         try:
-            frame = x.data
-            frame_h, frame_w = frame.shape[:2]
+            frame_buffer = x.data
+            frame_h, frame_w = frame_buffer.shape[:2]
 
             # Determine the new size of the watermark relative to the frame's width.
             wm_h, wm_w = self.watermark_image.shape[:2]
@@ -77,28 +79,32 @@ class WatermarkLayer(CallableLayer[VideoFrame, VideoFrame | None]):
             new_h = int(wm_h * scale_factor)
             resized_watermark = cv2.resize(self.watermark_image, (new_w, new_h), interpolation=cv2.INTER_AREA)
 
-            # Define a margin (in pixels) from the frame border.
-            margin = 10
+            # Compute margin in a ratio-based manner (e.g., 2% of frame width/height).
+            # This way, if frame resolution changes, the watermark stays proportionally placed.
+            margin_x = int(frame_w * self.margin_ratio)
+            margin_y = int(frame_h * self.margin_ratio)
 
             # Calculate the position based on the desired placement.
             if self.position == "top-left":
-                x_pos = margin
-                y_pos = margin
+                x_pos = margin_x
+                y_pos = margin_y
             elif self.position == "top-right":
-                x_pos = frame_w - new_w - margin
-                y_pos = margin
+                x_pos = frame_w - new_w - margin_x
+                y_pos = margin_y
             elif self.position == "bottom-left":
-                x_pos = margin
-                y_pos = frame_h - new_h - margin
+                x_pos = margin_x
+                y_pos = frame_h - new_h - margin_y
             elif self.position == "center":
                 x_pos = (frame_w - new_w) // 2
                 y_pos = (frame_h - new_h) // 2
             else:  # Default to bottom-right.
-                x_pos = frame_w - new_w - margin
-                y_pos = frame_h - new_h - margin
+                x_pos = frame_w - new_w - margin_x
+                y_pos = frame_h - new_h - margin_y
 
             # Overlay the watermark onto the frame.
-            watermarked_frame: NDArray[np.uint8] = self._overlay_image(frame, resized_watermark, x_pos, y_pos, self.opacity)  # type: ignore
+            watermarked_frame: NDArray[np.uint8] = self._overlay_image(
+                frame_buffer, resized_watermark, x_pos, y_pos, self.opacity  # type: ignore
+            )
 
             # Return the modified video frame.
             video_frame = VideoFrame(
