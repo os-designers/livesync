@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.3.14 (2025-02-08)
+
+### Bug Fixes
+
+- Add split layer and change frame timestamping strategy
+  ([`10fc6a9`](https://github.com/os-designers/livesync/commit/10fc6a9ef3857fab9ac710cb28388a5a15f7af9b))
+
+
 ## v0.3.13 (2025-02-06)
 
 ### Bug Fixes
