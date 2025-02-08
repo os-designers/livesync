@@ -16,9 +16,6 @@ class FpsControlLayer(CallableLayer[VideoFrame, VideoFrame | None]):
         if x.pts < 0:
             raise ValueError("Frame PTS must be non-negative")
 
-        if x.time_base is None:
-            raise ValueError("Frame must have a time_base")
-
         # Calculate frame interval in PTS units on first frame
         if self._frame_interval_pts == 0:
             target_interval = 1.0 / self.fps

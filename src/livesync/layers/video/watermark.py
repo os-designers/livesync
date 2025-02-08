@@ -113,7 +113,9 @@ class WatermarkLayer(CallableLayer[VideoFrame, VideoFrame | None]):
             # Return the modified video frame.
             video_frame = VideoFrame(
                 data=watermarked_frame,
+                time_base=x.time_base,
                 pts=x.pts,
+                timestamp_ms=x.timestamp_ms,
                 width=x.width,
                 height=x.height,
                 buffer_type=x.buffer_type,
@@ -151,7 +153,6 @@ class WatermarkLayer(CallableLayer[VideoFrame, VideoFrame | None]):
         bg_h, bg_w = background.shape[:2]
         ol_h, ol_w = overlay.shape[:2]
 
-        # Ensure the overlay fits within the background.
         if x + ol_w > bg_w or y + ol_h > bg_h:
             ol_w = min(ol_w, bg_w - x)
             ol_h = min(ol_h, bg_h - y)
@@ -159,27 +160,23 @@ class WatermarkLayer(CallableLayer[VideoFrame, VideoFrame | None]):
 
         roi = background[y : y + ol_h, x : x + ol_w]
 
-        # If the overlay has an alpha channel (i.e., 4 channels), blend using the alpha mask.
+        # If the overlay has an alpha channel (RGBA)
         if overlay.shape[2] == 4:
             overlay_rgb = overlay[..., :3]
-            # Normalize the alpha mask and apply the global opacity.
             alpha_mask = (overlay[..., 3:] / 255.0) * opacity
 
-            # When background and overlay have the same channel count (likely 3 channels).
             if roi.shape[2] == overlay_rgb.shape[2]:
                 blended = (alpha_mask * overlay_rgb + (1 - alpha_mask) * roi).astype(background.dtype)
                 background[y : y + ol_h, x : x + ol_w] = blended
-            # If the background has an extra channel (e.g., RGBA), blend RGB and leave alpha intact.
             elif roi.shape[2] == overlay_rgb.shape[2] + 1:
                 roi_rgb = roi[..., :3]
                 blended = (alpha_mask * overlay_rgb + (1 - alpha_mask) * roi_rgb).astype(background.dtype)
                 background[y : y + ol_h, x : x + ol_w, :3] = blended
         else:
-            # Handle overlay without its own alpha channel.
+            # Handle overlay without its own alpha channel (RGB)
             if roi.shape[2] == overlay.shape[2]:
                 blended = (opacity * overlay + (1 - opacity) * roi).astype(background.dtype)
                 background[y : y + ol_h, x : x + ol_w] = blended
-            # If background has an extra channel, blend only the RGB channels.
             elif roi.shape[2] == overlay.shape[2] + 1:
                 roi_rgb = roi[..., :3]
                 blended = (opacity * overlay + (1 - opacity) * roi_rgb).astype(background.dtype)

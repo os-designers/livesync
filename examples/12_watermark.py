@@ -13,7 +13,7 @@ if __name__ == "__main__":
     # ◇  (x): Captures frames from webcam (device 0)
     #
 
-    x = ls.WebcamInput(device_id=0, fps=30, buffer_type="rgba")
+    x = ls.WebcamInput(device_id=0, fps=30, buffer_type="rgb24")
 
     watermark_img = cv2.imread("./examples/assets/sample-watermark.png", cv2.IMREAD_UNCHANGED)
     logo_image = cv2.imencode(".png", watermark_img)[1].tobytes()

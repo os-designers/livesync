@@ -43,7 +43,9 @@ class VideoQualityControlLayer(CallableLayer[VideoFrame, VideoFrame | None]):
 
             video_frame = VideoFrame(
                 data=upscaled,  # type: ignore
+                time_base=x.time_base,
                 pts=x.pts,
+                timestamp_ms=x.timestamp_ms,
                 width=x.width,
                 height=x.height,
                 buffer_type=x.buffer_type,
