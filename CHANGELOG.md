@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.3.15 (2025-02-08)
+
+### Bug Fixes
+
+- Support rgb24 for watermark layer
+  ([`deedc29`](https://github.com/os-designers/livesync/commit/deedc299f88e4b716c0061fe6b9a9a11ca5ba048))
+
+
 ## v0.3.14 (2025-02-08)
 
 ### Bug Fixes
