@@ -69,7 +69,6 @@ class Merge(Layer):
 
         # Create new stream with proper typing
         new_stream = Stream(
-            dtype=tuple,
             name=name or obj.name,
             dependencies=inputs,
             dependency_strategy="all" if obj.how == "inner" else "any",

@@ -5,6 +5,7 @@ from .video.watermark import WatermarkLayer
 from .audio.microphone import MicrophoneInput
 from .core.input_layer import InputLayer
 from .core.merge_layer import Merge
+from .core.split_layer import Split
 from .numeric.multiply import Multiply
 from .core.lambda_layer import Lambda
 from .video.fps_control import FpsControlLayer
@@ -33,6 +34,7 @@ __all__ = [
     "WatermarkLayer",
     "Multiply",
     "Merge",
+    "Split",
     "DelayLayer",
     "RemoteLayer",
     "RemoteLayerServer",

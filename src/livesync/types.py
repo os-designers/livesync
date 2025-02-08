@@ -9,4 +9,11 @@ NumberType = int | float
 MediaFrameType = VideoFrame | AudioFrame
 DataType = NDArray[Any] | bytes | str | NumberType | MediaFrameType
 BytesableType = bytes | str | NumberType | MediaFrameType
-StreamDataType = DataType | dict[str, MediaFrameType] | tuple[MediaFrameType | None, ...]
+StreamDataType = (
+    DataType
+    | MediaFrameType
+    | dict[str, MediaFrameType]
+    | dict[str, MediaFrameType | None]
+    | dict[str, tuple[AudioFrame | VideoFrame, float] | None]
+    | tuple[MediaFrameType | None, ...]
+)

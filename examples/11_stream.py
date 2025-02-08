@@ -10,8 +10,8 @@ if __name__ == "__main__":
     # ◇  (x): Stream that generates values
     #
 
-    x = ls.Stream(dtype=float)
-    y = ls.Stream(dtype=float, dependencies=[x])
+    x = ls.Stream()
+    y = ls.Stream(dependencies=[x])
 
     async def main():
         async def producer():

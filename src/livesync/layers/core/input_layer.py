@@ -17,8 +17,6 @@ class InputLayer(Layer, AsyncIterator[T], Generic[T]):
 
     Parameters
     ----------
-    dtype : type
-        The data type of values that will be generated
     name : str | None, optional
         Name of the layer, by default None
 
@@ -29,7 +27,7 @@ class InputLayer(Layer, AsyncIterator[T], Generic[T]):
     ...         for i in range(10):
     ...             await asyncio.sleep(1)
     ...             yield i
-    >>> input_stream = MyInput(dtype=int)
+    >>> input_stream = MyInput()
 
     Notes
     -----
@@ -37,14 +35,9 @@ class InputLayer(Layer, AsyncIterator[T], Generic[T]):
     The layer automatically creates and returns a Stream object when instantiated.
     """
 
-    def __init__(
-        self,
-        dtype: type,
-        name: str | None = None,
-    ):
+    def __init__(self, name: str | None = None):
         super().__init__(name=name)
 
-        self._dtype = dtype
         self._generator: AsyncIterator[T] | None = None
 
     def __call__(self, *args: Any, **kwargs: Any) -> Stream:
@@ -62,7 +55,6 @@ class InputLayer(Layer, AsyncIterator[T], Generic[T]):
         obj = super().__new__(cls)
         obj.__init__(*args, **kwargs)  # type: ignore[misc]
         stream = Stream(
-            dtype=obj._dtype,
             name=obj.name,
             dependencies=[],
             generator=obj.aiter(),

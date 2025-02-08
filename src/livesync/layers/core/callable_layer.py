@@ -56,7 +56,6 @@ class CallableLayer(Layer, Generic[T, U]):
             New stream containing the processed data
         """
         new_stream = Stream(
-            dtype=x.dtype,
             name=name or self.name,
             dependencies=[x],
             operator=self.call,

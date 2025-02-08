@@ -23,6 +23,6 @@ if __name__ == "__main__":
 
     y = f(u)
 
-    sync = ls.Sync(inputs=[x1, x2], outputs=[u])
+    sync = ls.Sync(inputs=[x1, x2], outputs=[y])
     with sync.compile() as runner:
-        runner.run(callback=None)  # ls.StreamMonitoringCallback())
+        runner.run(callback=ls.StreamMonitoringCallback())

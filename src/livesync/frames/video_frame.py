@@ -35,10 +35,16 @@ class VideoFrame(BaseFrame):
         Color format of the frame data (e.g., 'rgba', 'rgb24', 'i420').
     data : NDArray[np.number[Any]]
         Video frame data as a 3D numpy array (height, width, channels).
-    pts : int
-        Presentation timestamp in seconds.
+    pts : int | None
+        Presentation timestamp. If `timestamp_ms` is given, this value is computed
+        from `timestamp_ms` and `time_base` (overriding any supplied value).
     time_base : Fraction | None
-        Time base of the video stream.
+        Time base of the video stream. If omitted when providing `timestamp_ms`,
+        it defaults to Fraction(1, 1000).
+    timestamp_ms : int | None
+        Timestamp in milliseconds. When provided, it is stored in `self.timestamp_ms`
+        and used to compute `pts`. If neither this nor a (pts, time_base) pair is supplied,
+        the timestamp is auto-generated using current system time in microseconds.
 
     Raises
     ------
@@ -52,10 +58,17 @@ class VideoFrame(BaseFrame):
         height: int,
         buffer_type: str,
         data: NDArray[np.number[Any]],
-        pts: int,
+        pts: int | None = None,
         time_base: Fraction | None = None,
+        timestamp_ms: int | None = None,
     ) -> None:
-        super().__init__(frame_type="video", data=data, pts=pts, time_base=time_base)
+        super().__init__(
+            frame_type="video",
+            data=data,
+            pts=pts,
+            time_base=time_base,
+            timestamp_ms=timestamp_ms,
+        )
 
         self.width = width
         self.height = height
@@ -135,7 +148,7 @@ class VideoFrame(BaseFrame):
             buffer_type_end = buffer.index(b"\x00", 8)
             buffer_type = buffer[8:buffer_type_end].decode()  # type: ignore
 
-            # Extract timestamp
+            # Extract timestamp (pts)
             pts_start = buffer_type_end + 1
             pts = struct.unpack(">d", buffer[pts_start : pts_start + 8])[0]
 
@@ -157,7 +170,7 @@ class VideoFrame(BaseFrame):
 
             return cls(
                 data=frame_data,
-                pts=pts,
+                pts=int(pts),
                 width=width,
                 height=height,
                 buffer_type=buffer_type,
@@ -167,11 +180,5 @@ class VideoFrame(BaseFrame):
             raise ValueError(f"Failed to deserialize video frame: {e}") from e
 
     def __repr__(self) -> str:
-        return (
-            f"VideoFrame(width={self.width}, "
-            f"height={self.height}, "
-            f"buffer_type={self.buffer_type}, "
-            f"pts={self.pts}, "
-            f"time_base={self.time_base}, "
-            f"data_shape={self.data.shape})"
-        )
+        time_val = self.pts * float(self.time_base) if self.time_base else self.pts
+        return f"VideoFrame(time={time_val})"

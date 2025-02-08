@@ -17,8 +17,6 @@ class Stream:
     ----------
     name : str
         A unique identifier for the stream.
-    dtype : type
-        The expected data type of values flowing through the stream.
     dependencies : Sequence[Stream], optional
         Other streams that this stream depends on for input.
     dependency_strategy : {'all', 'any'}, default='all'
@@ -35,7 +33,6 @@ class Stream:
 
     def __init__(
         self,
-        dtype: type,
         name: str = "unnamed",
         dependencies: Sequence[Stream] = (),
         dependency_strategy: Literal["all", "any"] = "all",
@@ -44,7 +41,6 @@ class Stream:
         layer: Layer | None = None,
     ) -> None:
         self.name = generate_name(name)
-        self.dtype = dtype
         self.dependencies = dependencies
         self.dependency_strategy = dependency_strategy
 
@@ -212,5 +208,4 @@ class Stream:
         str
             A string describing the stream and its dependencies.
         """
-        dtype_name = self.dtype.__name__ if hasattr(self.dtype, "__name__") else str(self.dtype)
-        return f"Stream(name={self.name}, dtype={dtype_name})"
+        return f"Stream(name={self.name})"

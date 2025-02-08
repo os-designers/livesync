@@ -41,7 +41,7 @@ class WebcamInput(InputLayer[VideoFrame]):
     """
 
     def __init__(self, device_id: int = 0, fps: int = 30, buffer_type: str = "rgba", name: str | None = None):
-        super().__init__(dtype=VideoFrame, name=name)
+        super().__init__(name=name)
         self.device_id = device_id
         self.fps = fps
         self.buffer_type = buffer_type

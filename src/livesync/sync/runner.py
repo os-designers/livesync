@@ -217,13 +217,19 @@ class Runner:
                 except StopAsyncIteration:
                     break
         finally:
-            for t in consumer_tasks:
-                if not t.done():
-                    t.cancel()
-
-            if consumer_tasks:
-                await asyncio.gather(*consumer_tasks, return_exceptions=True)
-                logger.info(f"Consumer tasks for stream '{stream.name}' cancelled.")
+            if continuous:
+                # For continuous mode, cancel any unfinished consumer tasks.
+                for t in consumer_tasks:
+                    if not t.done():
+                        t.cancel()
+                if consumer_tasks:
+                    await asyncio.gather(*consumer_tasks, return_exceptions=True)
+                    logger.info(f"Consumer tasks for stream '{stream.name}' cancelled.")
+            else:
+                # In non-continuous mode, wait for all consumer tasks to finish naturally.
+                if consumer_tasks:
+                    await asyncio.gather(*consumer_tasks, return_exceptions=True)
+                    logger.info(f"Consumer tasks for stream '{stream.name}' finished processing.")
 
             self._running = False
 

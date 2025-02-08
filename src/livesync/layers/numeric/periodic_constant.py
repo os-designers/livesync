@@ -3,7 +3,6 @@ from typing import AsyncIterator
 
 from ...types import DataType
 from ..core.input_layer import InputLayer
-from ..._utils.type_utils import infer_dtype
 
 
 class PeriodicConstantInput(InputLayer[DataType]):
@@ -25,7 +24,7 @@ class PeriodicConstantInput(InputLayer[DataType]):
     """
 
     def __init__(self, value: DataType, num_iter: int | None = None, interval: float = 0.0, name: str | None = None):
-        super().__init__(dtype=infer_dtype(value), name=name)
+        super().__init__(name=name)
         self._value = value
         self._current_iter = 0
         self._num_iter = num_iter

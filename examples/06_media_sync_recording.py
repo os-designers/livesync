@@ -19,18 +19,36 @@ if __name__ == "__main__":
     # ◇  (x1): Captures frames from webcam
     #
 
+    # x1 = ls.WebcamInput(device_id=0, fps=30)
+    # x2 = ls.MicrophoneInput(sample_rate=44100, chunk_size=1024)
+
+    # f1 = layers.DelayLayer(interval=3)
+    # f2 = layers.MediaSynchronizerLayer(buffer_size=1024, max_threshold=0.005)  # 5ms
+    # # f3 = layers.MediaRecorderLayer(filename="./examples/output.mp4")
+
+    # h = f1(x2)
+    # u = layers.Merge([x1, h], how="outer")
+
+    # y = f2(u)
+
+    # sync = ls.Sync(inputs=[x1, x2], outputs=[y])
+    # with sync.compile() as runner:
+    #     runner.run(callback=ls.LoggingCallback())
+
     x1 = ls.WebcamInput(device_id=0, fps=30)
     x2 = ls.MicrophoneInput(sample_rate=44100, chunk_size=1024)
 
-    f1 = layers.DelayLayer(interval=0.5)
-    f2 = layers.MediaSynchronizerLayer(buffer_size=1024, max_threshold=0.005)  # 5ms
-    f3 = layers.MediaRecorderLayer(filename="./examples/output.mp4")
+    f1 = layers.DelayLayer(interval=3)
+    f2 = layers.MediaSynchronizerLayer(buffer_size=1024, max_delay=0.1, sync_tolerance=0.05)  # 5ms
+    f3 = layers.VideoRecorderLayer(filename="./examples/output.mp4")
+    f4 = layers.AudioRecorderLayer(filename="./examples/output.wav")
 
-    h = f1(x2)
-    u = layers.Merge([x1, h], how="outer")
+    h1 = f2(f1(x1))
+    h2 = f2(x2)
 
-    y = f3(f2(u))
+    y1 = f3(h1)
+    y2 = f4(h2)
 
-    sync = ls.Sync(inputs=[x1, x2], outputs=[y])
+    sync = ls.Sync(inputs=[x1, x2], outputs=[y1, y2])
     with sync.compile() as runner:
         runner.run(callback=ls.StreamMonitoringCallback())

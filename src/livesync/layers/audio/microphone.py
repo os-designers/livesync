@@ -39,7 +39,7 @@ class MicrophoneInput(InputLayer[AudioFrame]):
         name: str | None = None,
     ):
         """Initializes the audio capture."""
-        super().__init__(dtype=AudioFrame, name=name)
+        super().__init__(name=name)
         self.device_id = device_id
         self.sample_rate = sample_rate
         self.channels = channels
@@ -106,7 +106,7 @@ class MicrophoneInput(InputLayer[AudioFrame]):
                     raise RuntimeError("Audio stream is not initialized")
 
                 try:
-                    data = self._stream.read(self.chunk_size)
+                    data = self._stream.read(self.chunk_size, exception_on_overflow=False)
                 except IOError as e:
                     logger.error(f"Error reading from audio stream: {e}")
                     raise

@@ -32,11 +32,15 @@ class AudioFrame(BaseFrame):
         Channel configuration ('mono' or 'stereo').
     data : NDArray[np.number[Any]]
         Audio samples as a 2D numpy array (samples x channels).
-    pts : int
-        Presentation timestamp in seconds.
+    pts : int | None
+        Presentation timestamp. If None, `timestamp_ms` or automatic timestamp generation is used.
     time_base : Fraction | None
-        Time base of the audio stream.
-
+        Time base of the audio stream. Must be provided together with pts unless timestamp_ms is provided.
+    timestamp_ms : int | None
+        Timestamp in milliseconds. If provided, it is used (with time_base) to compute pts.
+        If both pts and time_base are provided but timestamp_ms is also given, pts is recomputed
+        from the given timestamp_ms and time_base.
+        In the absence of both, the timestamp is auto-generated using current system time.
     Raises
     ------
     ValueError
@@ -50,10 +54,17 @@ class AudioFrame(BaseFrame):
         sample_format: str,
         channel_layout: str,
         data: NDArray[np.number[Any]],
-        pts: int,
+        pts: int | None = None,
         time_base: Fraction | None = None,
+        timestamp_ms: int | None = None,
     ) -> None:
-        super().__init__(frame_type="audio", data=data, pts=pts, time_base=time_base)
+        super().__init__(
+            frame_type="audio",
+            data=data,
+            pts=pts,
+            time_base=time_base,
+            timestamp_ms=timestamp_ms,
+        )
 
         self.sample_rate = sample_rate
         self.num_channels = num_channels
@@ -130,7 +141,7 @@ class AudioFrame(BaseFrame):
         layout_end = buffer.index(b"\x00", layout_start)
         channel_layout = buffer[layout_start:layout_end].decode()  # type: ignore
 
-        # Extract timestamp
+        # Extract timestamp (pts)
         pts_start = layout_end + 1
         pts = struct.unpack(">d", buffer[pts_start : pts_start + 8])[0]
 
@@ -155,15 +166,16 @@ class AudioFrame(BaseFrame):
 
         # Extract and reshape audio data
         audio_data = np.frombuffer(buffer[audio_data_start:], dtype=dtype_map[sample_format])
-        if len(audio_data.shape) == 1 and num_channels > 1:
+        if audio_data.ndim == 1 and num_channels > 1:
             audio_data = audio_data.reshape(-1, num_channels)
 
+        # Note: Here we pass pts and time_base as extracted from the metadata.
         return cls(
             sample_rate=sample_rate,
             num_channels=num_channels,
             sample_format=sample_format,
             data=audio_data,
-            pts=pts,
+            pts=int(pts),
             time_base=time_base,
             channel_layout=channel_layout,
         )
@@ -173,12 +185,5 @@ class AudioFrame(BaseFrame):
         return SAMPLE_WIDTH_MAP[self.sample_format]
 
     def __repr__(self) -> str:
-        return (
-            f"AudioFrame(sample_rate={self.sample_rate}, "
-            f"num_channels={self.num_channels}, "
-            f"format={self.sample_format}, "
-            f"layout={self.channel_layout}, "
-            f"pts={self.pts}, "
-            f"time_base={self.time_base}, "
-            f"data_shape={self.data.shape})"
-        )
+        time_val = self.pts * float(self.time_base) if self.time_base else self.pts
+        return f"AudioFrame(time={time_val})"
