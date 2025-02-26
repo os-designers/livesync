@@ -13,16 +13,16 @@
 -e file:examples/dashboard
 anyio==4.8.0
     # via httpx
-av==14.0.1
+av==14.2.0
     # via livesync-io
-certifi==2024.12.14
+certifi==2025.1.31
     # via httpcore
     # via httpx
 ffmpeg-python==0.2.0
     # via livesync-io
 future==1.0.0
     # via ffmpeg-python
-grpcio==1.69.0
+grpcio==1.70.0
     # via livesync-io
 h11==0.14.0
     # via httpcore
@@ -33,26 +33,26 @@ httpx==0.28.1
 idna==3.10
     # via anyio
     # via httpx
-numpy==2.1.0
+numpy==2.2.3
     # via livesync-io
     # via opencv-python
     # via pyqtgraph
-opencv-python==4.10.0.84
+opencv-python==4.11.0.86
     # via livesync-io
 protobuf==5.29.3
     # via livesync-io
 pyaudio==0.2.14
     # via livesync-io
-pyqt6==6.8.0
+pyqt6==6.8.1
     # via livesync-dashboard
     # via pyqt6-charts
 pyqt6-charts==6.8.0
     # via livesync-dashboard
-pyqt6-charts-qt6==6.8.1
+pyqt6-charts-qt6==6.8.2
     # via pyqt6-charts
-pyqt6-qt6==6.8.1
+pyqt6-qt6==6.8.2
     # via pyqt6
-pyqt6-sip==13.9.1
+pyqt6-sip==13.10.0
     # via pyqt6
     # via pyqt6-charts
 pyqtgraph==0.13.7

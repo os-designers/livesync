@@ -7,7 +7,7 @@ authors = [
     { name = "LiveSync", email = "support@live-sync.io" }
 ]
 dependencies = [
-    "numpy>=2.1.0, <3.0.0",
+    "numpy>=1.21.6, <3.0.0",
     "httpx>=0.25.2",
     "grpcio>=1.68.1, <2.0.0",
     "typing-extensions>=4.12.2",
@@ -15,7 +15,7 @@ dependencies = [
     "pyaudio>=0.2.14",
     "ffmpeg-python>=0.2.0",
     "av>=14.0.1",
-    "protobuf>=5.29.3",
+    "protobuf>=4.23.2",
 ]
 readme = "README.md"
 requires-python = ">= 3.10"
