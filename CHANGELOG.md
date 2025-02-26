@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.3.16 (2025-02-26)
+
+### Bug Fixes
+
+- Update project dependencies
+  ([`eb97002`](https://github.com/os-designers/livesync/commit/eb970024c46974962d859cb23cd573713494a460))
+
+
 ## v0.3.15 (2025-02-08)
 
 ### Bug Fixes
@@ -260,7 +268,7 @@ Key additions: - Stream-based processing with async support - Layer system (Inpu
   CallableLayer, Lambda, Merge, etc.) - Media synchronization capabilities - Configurable remote
   processing - Enhanced documentation and examples
 
-### BREAKING CHANGES
+### Breaking Changes
 
 - Complete API redesign from node-based to layer-based architecture
 
@@ -291,7 +299,7 @@ Key additions: - Stream-based processing with async support - Layer system (Inpu
 
 BREAKING CHANGE: proto file locations and import paths have changed
 
-### BREAKING CHANGES
+### Breaking Changes
 
 - **proto**: Proto file locations and import paths have changed
 
@@ -346,7 +354,7 @@ BREAKING CHANGE: Graph.replace_node may throw ValueError for invalid nodes
   RoundRobinSelector into RemoteNode class in remote_node.py. - Cleaned up logging configuration in
   basic_client.py by removing an unnecessary blank line.
 
-### BREAKING CHANGES
+### Breaking Changes
 
 - Graph.replace_node may throw ValueError for invalid nodes
 
